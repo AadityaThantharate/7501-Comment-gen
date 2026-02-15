@@ -517,7 +517,7 @@ dept.addEventListener("change", function () {
   });
 });
 
-fetch("tariffData.json")
+fetch("../json/tariffData.json")
   .then((response) => response.json())
   .then((data) => {
     const tarrifinput = document.getElementById("tarrifinput");

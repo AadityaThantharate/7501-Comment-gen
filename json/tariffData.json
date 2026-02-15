@@ -1,0 +1,472 @@
+[
+  {
+    "category": "Apparel",
+    "description": "Cotton T‑Shirt",
+    "hts_code": "6109100010"
+  },
+  {
+    "category": "Apparel",
+    "description": "Men’s Cotton Shirt",
+    "hts_code": "6205202010"
+  },
+  {
+    "category": "Apparel",
+    "description": "Women’s Blouse Polyester",
+    "hts_code": "6206303040"
+  },
+  {
+    "category": "Apparel",
+    "description": "Wool Sweater",
+    "hts_code": "6110110020"
+  },
+  {
+    "category": "Apparel",
+    "description": "Denim Jeans",
+    "hts_code": "6203424010"
+  },
+  {
+    "category": "Apparel",
+    "description": "Men’s Jacket Polyester",
+    "hts_code": "6201933511"
+  },
+  {
+    "category": "Apparel",
+    "description": "Kids Cotton Shorts",
+    "hts_code": "6204624050"
+  },
+  {
+    "category": "Footwear",
+    "description": "Leather Shoes",
+    "hts_code": "6403519040"
+  },
+  {
+    "category": "Footwear",
+    "description": "Sports Running Shoes",
+    "hts_code": "6404119030"
+  },
+  {
+    "category": "Footwear",
+    "description": "Rubber Sandals",
+    "hts_code": "6402193030"
+  },
+  {
+    "category": "Electronics",
+    "description": "Mobile Phone",
+    "hts_code": "8517120050"
+  },
+  {
+    "category": "Electronics",
+    "description": "Laptop Computer",
+    "hts_code": "8471300100"
+  },
+  {
+    "category": "Electronics",
+    "description": "Tablet Device",
+    "hts_code": "8471300200"
+  },
+  {
+    "category": "Electronics",
+    "description": "Smartwatch",
+    "hts_code": "8517690000"
+  },
+  {
+    "category": "Electronics",
+    "description": "Bluetooth Headphones",
+    "hts_code": "8518302000"
+  },
+  {
+    "category": "Electronics",
+    "description": "LED Television",
+    "hts_code": "8528727300"
+  },
+  {
+    "category": "Electronics",
+    "description": "Computer Keyboard",
+    "hts_code": "8471602000"
+  },
+  {
+    "category": "Electronics",
+    "description": "Mouse Wireless",
+    "hts_code": "8471606060"
+  },
+  {
+    "category": "Electronics",
+    "description": "USB Flash Drive",
+    "hts_code": "8523510000"
+  },
+  {
+    "category": "Electronics",
+    "description": "Power Bank Lithium",
+    "hts_code": "8507600090"
+  },
+  {
+    "category": "Home Appliances",
+    "description": "Microwave Oven",
+    "hts_code": "8516500000"
+  },
+  {
+    "category": "Home Appliances",
+    "description": "Vacuum Cleaner",
+    "hts_code": "8508110000"
+  },
+  {
+    "category": "Home Appliances",
+    "description": "Electric Iron",
+    "hts_code": "8516400000"
+  },
+  {
+    "category": "Home Appliances",
+    "description": "Ceiling Fan",
+    "hts_code": "8414519090"
+  },
+  {
+    "category": "Home Appliances",
+    "description": "Refrigerator 250L",
+    "hts_code": "8418100040"
+  },
+  {
+    "category": "Home Appliances",
+    "description": "Washing Machine",
+    "hts_code": "8450110010"
+  },
+  {
+    "category": "Home Appliances",
+    "description": "Air Conditioner Split",
+    "hts_code": "8415100090"
+  },
+  {
+    "category": "Furniture",
+    "description": "Wooden Chair",
+    "hts_code": "9401614010"
+  },
+  {
+    "category": "Furniture",
+    "description": "Office Table",
+    "hts_code": "9403308000"
+  },
+  {
+    "category": "Furniture",
+    "description": "Metal Shelf Unit",
+    "hts_code": "9403200030"
+  },
+  {
+    "category": "Furniture",
+    "description": "Sofa Fabric",
+    "hts_code": "9401616010"
+  },
+  {
+    "category": "Furniture",
+    "description": "Mattress Foam",
+    "hts_code": "9404210010"
+  },
+  {
+    "category": "Tools",
+    "description": "Hand Drill Electric",
+    "hts_code": "8467210010"
+  },
+  {
+    "category": "Tools",
+    "description": "Hammer Steel",
+    "hts_code": "8205200000"
+  },
+  {
+    "category": "Tools",
+    "description": "Screwdriver Set",
+    "hts_code": "8205400000"
+  },
+  {
+    "category": "Tools",
+    "description": "Wrench Adjustable",
+    "hts_code": "8204110030"
+  },
+  { "category": "Tools", "description": "Power Saw", "hts_code": "8465910030" },
+  {
+    "category": "Kitchen",
+    "description": "Stainless Steel Pan",
+    "hts_code": "7323930000"
+  },
+  {
+    "category": "Kitchen",
+    "description": "Kitchen Knife",
+    "hts_code": "8211929060"
+  },
+  {
+    "category": "Kitchen",
+    "description": "Food Processor",
+    "hts_code": "8509400040"
+  },
+  {
+    "category": "Kitchen",
+    "description": "Ceramic Plate",
+    "hts_code": "6911104100"
+  },
+  {
+    "category": "Kitchen",
+    "description": "Glass Cup",
+    "hts_code": "7013371000"
+  },
+  {
+    "category": "Beauty",
+    "description": "Shampoo 250ml",
+    "hts_code": "3305100000"
+  },
+  {
+    "category": "Beauty",
+    "description": "Body Lotion",
+    "hts_code": "3304990000"
+  },
+  { "category": "Beauty", "description": "Perfume", "hts_code": "3303000030" },
+  {
+    "category": "Beauty",
+    "description": "Face Cream",
+    "hts_code": "3304990030"
+  },
+  { "category": "Beauty", "description": "Lipstick", "hts_code": "3304100000" },
+  {
+    "category": "Auto Parts",
+    "description": "Car Brake Pads",
+    "hts_code": "8708305000"
+  },
+  {
+    "category": "Auto Parts",
+    "description": "Car Battery",
+    "hts_code": "8507104060"
+  },
+  {
+    "category": "Auto Parts",
+    "description": "Air Filter",
+    "hts_code": "8421310000"
+  },
+  {
+    "category": "Auto Parts",
+    "description": "Engine Spark Plug",
+    "hts_code": "8511100080"
+  },
+  {
+    "category": "Auto Parts",
+    "description": "Car Tires",
+    "hts_code": "4011101030"
+  },
+  {
+    "category": "Sports",
+    "description": "Football Synthetic",
+    "hts_code": "9506624020"
+  },
+  {
+    "category": "Sports",
+    "description": "Cricket Bat",
+    "hts_code": "9506624040"
+  },
+  {
+    "category": "Sports",
+    "description": "Tennis Racket",
+    "hts_code": "9506511000"
+  },
+  {
+    "category": "Sports",
+    "description": "Yoga Mat PVC",
+    "hts_code": "3918901000"
+  },
+  {
+    "category": "Sports",
+    "description": "Gym Gloves",
+    "hts_code": "4203291000"
+  },
+  {
+    "category": "Toys",
+    "description": "Plastic Toy Car",
+    "hts_code": "9503007030"
+  },
+  {
+    "category": "Toys",
+    "description": "Soft Plush Toy",
+    "hts_code": "9503002100"
+  },
+  {
+    "category": "Toys",
+    "description": "Puzzle Board",
+    "hts_code": "9503004000"
+  },
+  {
+    "category": "Toys",
+    "description": "Building Blocks",
+    "hts_code": "9503006000"
+  },
+  {
+    "category": "Toys",
+    "description": "Remote Control Car",
+    "hts_code": "9503007500"
+  },
+  {
+    "category": "Bags",
+    "description": "Backpack Nylon",
+    "hts_code": "4202920400"
+  },
+  {
+    "category": "Bags",
+    "description": "Leather Handbag",
+    "hts_code": "4202219000"
+  },
+  {
+    "category": "Bags",
+    "description": "Travel Suitcase",
+    "hts_code": "4202121000"
+  },
+  {
+    "category": "Bags",
+    "description": "Laptop Bag Polyester",
+    "hts_code": "4202923100"
+  },
+  {
+    "category": "Bags",
+    "description": "Waist Pouch",
+    "hts_code": "4202228030"
+  },
+  {
+    "category": "Health",
+    "description": "Digital Thermometer",
+    "hts_code": "9025198080"
+  },
+  {
+    "category": "Health",
+    "description": "Blood Pressure Monitor",
+    "hts_code": "9026204000"
+  },
+  {
+    "category": "Health",
+    "description": "Surgical Gloves",
+    "hts_code": "4015110000"
+  },
+  {
+    "category": "Health",
+    "description": "First Aid Kit",
+    "hts_code": "3006500000"
+  },
+  {
+    "category": "Health",
+    "description": "Face Mask Non‑woven",
+    "hts_code": "6307909889"
+  },
+  {
+    "category": "Stationery",
+    "description": "Ball Pen",
+    "hts_code": "9608100000"
+  },
+  {
+    "category": "Stationery",
+    "description": "Notebook Paper",
+    "hts_code": "4820200000"
+  },
+  {
+    "category": "Stationery",
+    "description": "Marker Pen",
+    "hts_code": "9608200000"
+  },
+  {
+    "category": "Stationery",
+    "description": "A4 Paper Pack",
+    "hts_code": "4802570000"
+  },
+  {
+    "category": "Stationery",
+    "description": "Stapler",
+    "hts_code": "8472909000"
+  },
+  {
+    "category": "Food",
+    "description": "Instant Noodles",
+    "hts_code": "1902300030"
+  },
+  {
+    "category": "Food",
+    "description": "Chocolate Bar",
+    "hts_code": "1806903590"
+  },
+  {
+    "category": "Food",
+    "description": "Coffee Beans",
+    "hts_code": "0901110035"
+  },
+  { "category": "Food", "description": "Green Tea", "hts_code": "0902100010" },
+  {
+    "category": "Food",
+    "description": "Canned Tuna",
+    "hts_code": "1604144091"
+  },
+  {
+    "category": "Bedding",
+    "description": "Bed Sheet Cotton",
+    "hts_code": "6302310020"
+  },
+  {
+    "category": "Bedding",
+    "description": "Pillow Polyester",
+    "hts_code": "9404908000"
+  },
+  {
+    "category": "Bedding",
+    "description": "Blanket Fleece",
+    "hts_code": "6301402000"
+  },
+  {
+    "category": "Bedding",
+    "description": "Comforter Set",
+    "hts_code": "9404308000"
+  },
+  {
+    "category": "Pets",
+    "description": "Dog Leash Nylon",
+    "hts_code": "4201003000"
+  },
+  {
+    "category": "Pets",
+    "description": "Pet Food Dry",
+    "hts_code": "2309100010"
+  },
+  {
+    "category": "Pets",
+    "description": "Pet Water Bowl",
+    "hts_code": "3924103000"
+  },
+  { "category": "Pets", "description": "Cat Litter", "hts_code": "2508400000" },
+  {
+    "category": "Lighting",
+    "description": "LED Bulb",
+    "hts_code": "8539500000"
+  },
+  {
+    "category": "Lighting",
+    "description": "Table Lamp",
+    "hts_code": "9405208010"
+  },
+  {
+    "category": "Lighting",
+    "description": "Flashlight",
+    "hts_code": "8513104000"
+  },
+  {
+    "category": "Accessories",
+    "description": "Leather Belt",
+    "hts_code": "4203400000"
+  },
+  {
+    "category": "Accessories",
+    "description": "Wool Scarf",
+    "hts_code": "6117102030"
+  },
+  {
+    "category": "Accessories",
+    "description": "Cotton Cap",
+    "hts_code": "6505001530"
+  },
+  {
+    "category": "Accessories",
+    "description": "Sunglasses",
+    "hts_code": "9004100000"
+  },
+  {
+    "category": "Accessories",
+    "description": "Watch Strap Leather",
+    "hts_code": "9113908080"
+  }
+]

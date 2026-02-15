@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FedEx MID Generator</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="fedex.css" />
+  </head>
+  <body>
+    <nav class="tabs">
+      <a class="tab" href="index.html">Checklist</a>
+      <a class="tab" href="comment.html">Comment Generator</a>
+    </nav>
+
+    <section class="cards" style="max-width:900px; margin:0 auto; padding:20px">
+      <div class="card">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+          <!-- Input Section -->
+          <div>
+            <h3>FedEx MID Generator</h3>
+            <div style="font-size:12px; color:#556b7a; margin-bottom:12px">Derive CBP manufacturer/shipper code per Customs Directive 3550-055</div>
+            <div class="input-group">
+              <label>Country Code *</label>
+              <input id="country" placeholder="US, GB, CN..." maxlength="2" />
+            </div>
+            <div class="input-group">
+              <label>Manufacturer Name *</label>
+              <input id="manufacturer" placeholder="e.g., SHEN LITU Co., LTD." />
+            </div>
+            <div class="input-group">
+              <label>Address *</label>
+              <input id="address" placeholder="e.g., 11455 Main Street" />
+            </div>
+            <div class="input-group">
+              <label>City *</label>
+              <input id="city" placeholder="e.g., Shanghai" />
+            </div>
+            <div class="button-group" style="margin-top:16px">
+              <button id="generate" class="proceed">Generate</button>
+              <button id="clearBtn" class="clear-btn">Clear</button>
+            </div>
+          </div>
+
+          <!-- Result Section -->
+          <div>
+            <h3>Result</h3>
+            <div id="resultBox" class="result-box">
+              Fill the form to generate the MID code.
+            </div>
+            <div style="margin-top:12px">
+              <button id="copyBtn" class="copy-btn">Copy Code</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="fedex.js"></script>
+  </body>
+</html>

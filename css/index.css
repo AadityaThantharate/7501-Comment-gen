@@ -1,0 +1,232 @@
+/* ---------------- GLOBAL STYLE (Compact Edition) ---------------- */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+:root {
+  --primary: #4f7cff;
+  --primary-dark: #3d66d0;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #2d3436;
+  --text-light: #6c7a86;
+  --border: #d1d1d1;
+  --radius: 10px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: "Poppins", sans-serif;
+  font-size: 13px; /* Smaller, crisp text */
+  color: var(--text);
+}
+
+/* ---------------- NAV TABS ---------------- */
+.tabs {
+  /* display: flex;
+  gap: 8px;
+  background: var(--card);
+  padding: 12px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin: 15px;
+  flex-wrap: wrap; */
+  display: flex;
+  gap: 1rem;
+  /* background: var(--card); */
+  padding: 12px;
+  /* border-radius: var(--radius); */
+  /* box-shadow: var(--shadow); */
+  margin: 15px;
+  flex-wrap: wrap;
+  background-color: #4d148c;
+}
+
+.tab {
+  /* padding: 6px 12px;
+  font-size: 12px;
+  background: #ededed;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease; */
+  padding: 6px 12px;
+  font-size: 12px;
+  /* background: #ededed; */
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  color: white !important;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.tab:hover {
+  /* background: #dcdcdc; */
+  background: linear-gradient(45deg, #ff6600, #ffb74d);
+  color: white !important;
+}
+
+.tab.orange {
+  /* background: linear-gradient(45deg, #ff6600, #ffb74d);
+  color: white; */
+  font-weight: 600;
+  border: none;
+  color: #ff6600;
+}
+a {
+  text-decoration: none;
+}
+
+/* ---------------- LAYOUT ---------------- */
+.layout {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 15px;
+  padding: 15px;
+}
+.filedsContainters {
+  display: flex;
+  align-items: center;
+}
+
+/* ---------------- CARDS ---------------- */
+.card {
+  background: var(--card);
+  padding: 15px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.card h3 {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+/* ---------------- FORM FIELDS ---------------- */
+.fields {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.field {
+  flex: 1;
+  min-width: 180px;
+}
+
+.field label {
+  font-size: 11px;
+  margin-bottom: 4px;
+  color: var(--text-light);
+}
+
+input,
+select {
+  padding: 8px;
+  font-size: 13px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  outline: none;
+  width: 90%;
+  transition: 0.2s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(79, 124, 255, 0.15);
+}
+
+/* ---------------- CHECKLIST ---------------- */
+.checklist {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 40% 18% 42%;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fafafa;
+  border: 1px solid #e5e5e5;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.note {
+  font-size: 12px;
+}
+
+/* ---------------- BUTTONS ---------------- */
+.proceed {
+  /* margin-top: 10px; */
+  padding: 7px 12px;
+  font-size: 12px;
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.proceed:hover {
+  background: var(--primary-dark);
+}
+
+#restAll {
+  padding: 8px 14px;
+  font-size: 12px;
+  margin: 15px;
+  background: #ff5c5c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#restAll:hover {
+  background: #e04a4a;
+}
+
+/* ---------------- SIDEBAR ---------------- */
+.sidebar .links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar .links a {
+  font-size: 12px;
+  color: var(--primary);
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    order: -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 450px) {
+  input,
+  select {
+    font-size: 12px;
+    padding: 7px;
+  }
+}

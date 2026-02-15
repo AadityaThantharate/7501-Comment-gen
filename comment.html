@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IntraTool</title>
+  <link rel="stylesheet" href="comment.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="tarrifinput">
+      <input type="text" id="tarrifinput" placeholder="Search Product Tarrif..." />
+      <input type="text" id="proceQuetions" placeholder="Search Process Quetions..." />
+    </div>
+
+    <div id="results" class="results"></div>
+    <nav class="tabs">
+      <a class="tab" href="fedex.html">MID Generator</a>
+      <a class="tab" href="index.html">Checklist</a>
+      <a class="tab orange" href="comment.html">Comment Generator</a>
+      <!-- <a class="tab">PGA Code Guide</a> -->
+      <!-- <a class="tab">USMCA</a> -->
+      <!-- <a class="tab">Consignee - PWDBW</a> -->
+      <a class="tab">Personal Use</a>
+      <!-- <a class="tab">Manufacturer - PWDBW</a> -->
+
+      <select id="activitySelect">
+        <option>Select Activity</option>
+        <option>Meeting</option>
+        <option>Break</option>
+        <option>Training</option>
+        <option>Other</option>
+        <option>Production</option>
+        <option>Idle</option>
+        <option>Research</option>
+        <option>Assistance</option>
+        <option>Documentation</option>
+        <option>Communication</option>
+        <option>System Downtime</option>
+        <option>Review</option>
+        <option>Verification</option>
+        <option>Data Entry</option>
+        <option>Quality Check</option>
+        <option>Follow-up</option>
+        <option>Planning</option>
+        <option>Analysis</option>
+        <option>Reporting</option>
+        <option>Collaboration</option>
+        <option>Problem Solving</option>
+      </select>
+      <a class="tab" id="actionLog">Activity Log</a>
+
+    </nav>
+    <!-- <button class="tab orange" id="actionLog">Activity Log</button> -->
+  </header>
+
+  <section class="cards">
+    <div class="card">
+      <div>
+        <h3><i data-lucide="file-text"></i> 7501 Review Comment</h3>
+        <select id="dept">
+          <option value="">Select Department</option>
+
+          <option value="Paper work">Paper work</option>
+          <option value="Parties">Parties</option>
+          <option value="Quantity">Quantity</option>
+          <option value="Shipment contains diamond">Shipment contains diamonds</option>
+          <option value="Reason not listed">Reason not listed</option>
+          <option value="Country of origin">Country of Origin</option>
+          <option value="Description">Description</option>
+          <option value="Duplex error">Duplex Error</option>
+          <option value="Value">Value</option>
+        </select>
+
+
+        <select id="task"></select>
+
+        <input type="text" placeholder="Additional Comment" id="add-comment" />
+        <button id="review7501">Copy Items</button>
+        <pre id="debug"></pre>
+        <div id="output"></div>
+      </div>
+      <div>
+        <h3><i data-lucide="truck"></i class='ri-information-line'> 7501 Completed Comment</h3>
+
+        <input placeholder="Enter shipment entry number" type="number" id="input75" />
+        <div class="button-group">
+          <button id="commentSeven">7501 Comment</button>
+          <div id="preview7501"></div>
+        </div>
+      </div>
+
+      <div>
+        <h3><i data-lucide="truck"></i class='ri-information-line'> Exit Shipment ?</h3>
+        <input placeholder="Enter shipment Exit Reason" type="text" id="inputExit" />
+        <div class="button-group">
+          <button id="exitBtn">Exit Comment</button>
+          <div id="exitsPreview"></div>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="card">
+      <div>
+        <h3><i data-lucide="truck"></i class='ri-information-line'> Indexing Completed Comment</h3>
+        <input placeholder="Enter W-Bill number" id="indexShips" type="number" />
+        <div class="button-group">
+          <button id="indexComplete">SI AUTO</button>
+          <button id="siMulti">SI MULTI</button>
+          <button id="siFormal">SI FORMAL</button>
+
+        </div>
+        <div id="previewIndex"></div>
+      </div>
+      <div>
+
+        <h3><i data-lucide="message-square">
+          </i> Indexing Review Comment</h3>
+        <select id="deptTwo">
+          <option>Select Review Options</option>
+          <option>Invoice in other language</option>
+          <option>Invoice missing
+          </option>
+          <option>PGA</option>
+          <option>Steel License Required
+          </option>
+          <option>Lack of Measure / Metric support
+          </option>
+
+
+          <option>Value mismatch
+          </option>
+          <option>EU origin</option>
+          <option>Sample Description
+          </option>
+          <option>Reason not listed
+          </option>
+          <option>Shipment Contains Watch
+          </option>
+          <option>Shipment Contains Diamonds 1B to Handle
+
+          </option>
+          <option>Manufacture information missing
+
+
+          </option>
+          <option>Invoice illegible
+
+          </option>
+        </select>
+
+        <input type="text" placeholder="Add Comment" id="addComment" />
+        <button id="btn-raviewTwo">Copy Items</button>
+        <div id="preview"></div>
+
+
+
+
+      </div>
+
+      <div>
+        <h3><i data-lucide="database"></i>Shipment In Use</h3>
+        <input id="entry-input" type="number" placeholder="Enter Entry No..." />
+        <button id="proc-comment">Shipment InUse</button>
+        <div id="previewHold"></div>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="card">
+      <div>
+        <h3><i data-lucide="hash"></i> HS Code Modifier</h3>
+        <input id="input" type="number" placeholder="Enter HS code..." />
+        <button id="submit">Generate</button>
+        <h3 id="Hscode">Tarrif No</h3>
+      </div>
+      <div>
+        <h3><i data-lucide="calculator"></i> Unit Conversion</h3>
+        <input id="inputUnit" type="number" placeholder="Entry Amount for Conversion" />
+        <select id="unitSelect">
+          <option>Select Units</option>
+          <option>Piece</option>
+          <option>Pair</option>
+          <option>Set</option>
+          <option>Dozen</option>
+          <option>Half Gross</option>
+          <option>Gross</option>
+          <option>Score</option>
+          <option>Bundle</option>
+          <option>Pack</option>
+          <option>Box</option>
+          <option>Carton</option>
+          <option>Case</option>
+          <option>Pallet</option>
+          <option>Crate</option>
+          <option>Lot</option>
+        </select>
+        <!-- <button id="convertBtn">Convert</button> -->
+        <div id="previewUnitConv"></div>
+      </div>
+    </div>
+
+    <div class="card" style="display: none;">
+      <h3><i data-lucide="clipboard-list"></i> Counter Tracker</h3>
+      <div id="counter">Copied: 0 times</div>
+      <input id="editInput" type="number" placeholder="Count" />
+      <button id="edit">Set</button>
+      <button id="reset">Reset</button>
+      <button id="decrement">Decrement</button>
+    </div>
+
+
+
+
+  </section>
+  <!-- Drawer Panel for Activity Logs -->
+  <div id="activityDrawer" class="drawer">
+    <div class="drawer-header">
+
+      <h4>Activity Logs</h4>
+
+      <button id="resetLogsBtn">Reset</button><button id="exportExcel">Down Excel</button> <button
+        id="closeDrawer">X</button>
+    </div>
+
+    <div id="activitySummary"></div>
+    <div id="logsContainer" style="height: 250px; overflow: auto;"></div>
+    <div id="idleLogs" style="height: 240px; overflow: auto"></div>
+
+
+
+
+
+
+    <script src="comment.js"></script>
+</body>
+
+</html>

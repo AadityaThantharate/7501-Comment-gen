@@ -1,0 +1,481 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+/* ================= GLOBAL ================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #f4f4f8;
+  margin: 0;
+  padding: 0px 16px;
+  color: #2e2e2e;
+  font-size: 14px; /* engineering base */
+  line-height: 1.4;
+}
+
+/* ================= HEADINGS ================= */
+h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4d148c;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #f4f0fa;
+  border-radius: 6px;
+  margin: 0 0 6px 0;
+}
+
+h3 i {
+  font-size: 14px;
+}
+
+/* ================= TOP BAR ================= */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #4d148c;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+
+/* ================= SEARCH ================= */
+.tarrifinput {
+  display: flex;
+  width: 51%;
+  justify-content: space-between;
+}
+
+.tarrifinput input {
+  width: 300px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  font-size: 13px;
+}
+
+.results {
+  position: absolute;
+  top: 70px;
+  width: 300px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 99;
+}
+
+.results div {
+  padding: 8px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.results div:hover {
+  background: #f4f4f8;
+}
+
+/* ================= TABS ================= */
+.tabs {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.tab {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.tab:hover {
+  background: linear-gradient(45deg, #ff6600, #ffb74d);
+}
+
+/* ================= GRID ================= */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 3fr));
+  gap: 12px;
+}
+
+/* ================= CARD ================= */
+.card {
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card input,
+.card select {
+  height: 32px;
+  padding: 0 8px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid #d9d9d9;
+  width: 100%;
+  margin-top: 8px;
+}
+#Hscode {
+  margin-top: 8px;
+}
+
+.card button {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: none;
+  background: linear-gradient(45deg, #ff6600, #ffb74d);
+  color: white;
+  cursor: pointer;
+  width: fit-content;
+  margin-top: 10px;
+}
+
+.card button:hover {
+  opacity: 0.9;
+}
+
+/* ================= LOGS ================= */
+.logs-renders {
+  padding: 6px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.render-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: #f4f4f8;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.delete-btn {
+  color: red;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ================= ACTIVITY SELECT ================= */
+#activitySelect {
+  height: 25px;
+  font-size: 13px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 1px solid #d9d9d9;
+}
+
+/* ================= DRAWER ================= */
+.drawer {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 380px;
+  height: 100%;
+  background: #fff;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+  /* padding: 12px; */
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  z-index: 9999;
+}
+
+.drawer.open {
+  right: 0;
+  top: 70px;
+  margin-top: 6px;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  position: fixed;
+  background: #4d148c;
+  width: 28%;
+  top: 0px;
+  color: white;
+  height: 75px;
+}
+
+#closeDrawer,
+#actionLog,
+#resetLogsBtn,
+#exportExcel {
+  height: 25px;
+  padding: 0 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  background: linear-gradient(45deg, #ff6600, #ffb74d);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* ================= IDLE ================= */
+
+.idle-row {
+  display: grid;
+  grid-template-columns: 1fr 70px 52px;
+  align-items: center;
+
+  height: 32px; /* compact */
+  padding: 0 10px;
+  margin-bottom: 6px;
+
+  background: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-left: 4px solid #b00020;
+
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* Task / Action */
+.idle-row .task-name {
+  font-weight: 600;
+  color: #2e2e2e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Duration */
+.idle-row .duration {
+  text-align: right;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Status Badge */
+.idle-row .status {
+  justify-self: end;
+
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 600;
+
+  background: #b00020;
+  color: #fff;
+  border-radius: 10px;
+  line-height: 1;
+}
+/* /////////////////////ChatBOT///////////////////////// */
+.chatbot {
+  width: 420px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  padding: 15px;
+  background: #0b5ed7;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px 10px 0 0;
+}
+
+.chat-body {
+  padding: 15px;
+  height: 350px;
+  overflow-y: auto;
+  background: #fafafa;
+}
+
+.message {
+  margin-bottom: 10px;
+  max-width: 85%;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.user {
+  background: #d1e7ff;
+  align-self: flex-end;
+  text-align: right;
+}
+
+.bot {
+  background: #e9ecef;
+  align-self: flex-start;
+}
+
+.chat-footer {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+
+.chat-footer input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.chat-footer button {
+  padding: 10px 15px;
+  border: none;
+  background: #0b5ed7;
+  color: white;
+  cursor: pointer;
+}
+.preview {
+  /* background: #f4f0fa; */
+  background: white; /* subtle purple tint */
+  border: 1px solid #d9d0eb;
+  border-left: 4px solid #4d148c;
+
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-top: 8px;
+
+  font-weight: 500;
+  font-size: 14px;
+  color: #2e2e2e;
+  line-height: 1.4;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+/* ================= CONTENT UPDATE EFFECT ================= */
+
+/* Animation */
+@keyframes contentFlash {
+  0% {
+    background-color: #fff;
+    transform: scale(1);
+    box-shadow: none;
+  }
+  30% {
+    background-color: #f4f0fa;
+    transform: scale(1.015);
+    box-shadow: 0 0 0 3px rgba(77, 20, 140, 0.25);
+  }
+  100% {
+    background-color: #fff;
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+/* Border pulse */
+@keyframes borderPulse {
+  0% {
+    border-left-color: #4d148c;
+  }
+  50% {
+    border-left-color: #ff6600;
+  }
+  100% {
+    border-left-color: #4d148c;
+  }
+}
+
+/* ===== Trigger animation on button click ===== */
+
+/* Any button inside card when clicked */
+.card button:active ~ .preview,
+.card button:active + .preview,
+.card button:active ~ div .preview {
+  animation: contentFlash 0.6s ease-out;
+}
+
+/* Stronger feedback */
+.preview {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Border animation */
+.card button:active ~ .preview::before,
+.card button:active + .preview::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: #4d148c;
+  animation: borderPulse 0.6s ease;
+  border-radius: 4px 0 0 4px;
+}
+
+/* Idle row update effect */
+@keyframes idleFlash {
+  0% {
+    background-color: #fff;
+  }
+  50% {
+    background-color: #fdecea;
+  }
+  100% {
+    background-color: #fff;
+  }
+}
+
+.idle-row {
+  transition: background-color 0.3s ease;
+}
+
+button:active ~ #idleLogs .idle-row {
+  animation: idleFlash 0.6s ease;
+}
+/* ================= BUTTON CLICK FEEDBACK ================= */
+
+/* Smooth base transition */
+.card button,
+#closeDrawer,
+#actionLog,
+#resetLogsBtn,
+#exportExcel {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.18);
+}
+
+/* Pressed state */
+.card button:active,
+#closeDrawer:active,
+#actionLog:active,
+#resetLogsBtn:active,
+#exportExcel:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+}
+#activitySummary {
+  font-weight: 900;
+  color: #4d148c;
+  text-align: center;
+  margin-top: 10px;
+}
+/* Optional: focus outline removal for clean UI */
+.card button:focus {
+  outline: none;
+}

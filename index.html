@@ -59,6 +59,17 @@
     <!-- <button class="tab orange" id="actionLog">Activity Log</button> -->
   </header>
 
+<div class="container">
+  <div class="row">
+    <label>Country of Origin (COO): </label>
+    <input type="text" id="coo" onkeydown="checkKey(event)">
+  </div>
+
+  <div class="row">
+    <label># Lines </label>
+    <input type="text" id="lines" onkeydown="checkKey(event)">
+  </div>
+</div>
   <section class="cards">
     <div class="card">
       <div>
@@ -80,7 +91,7 @@
 
         <select id="task"></select>
 
-        <input type="text" placeholder="Additional Comment" id="add-comment" />
+        <input type="text" placeholder="Additional Comment" id="add-comment"/>
         <button id="review7501">Copy Items</button>
         <pre id="debug"></pre>
         <div id="output"></div>

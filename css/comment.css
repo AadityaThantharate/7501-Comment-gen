@@ -479,3 +479,89 @@ button:active ~ #idleLogs .idle-row {
 .card button:focus {
   outline: none;
 }
+
+/* ================= COO & LINES INPUT STYLING (UX Improvements) ================= */
+.container {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  margin: 10px 0 18px 0;
+  flex-wrap: wrap;
+}
+
+.container .row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.container .row label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #4d148c;
+}
+
+.container .row input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e6dff6;
+  background: linear-gradient(180deg, #ffffff, #fffafc);
+  box-shadow: 0 4px 14px rgba(77, 20, 140, 0.03);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease;
+}
+
+.container .row input::placeholder {
+  color: #bfa8d9;
+  font-weight: 500;
+}
+
+.container .row input:focus {
+  border-color: #ff9f5a;
+  box-shadow: 0 8px 30px rgba(255, 159, 90, 0.12);
+  transform: translateY(-1px);
+}
+
+/* Distinct visual identity for COO vs Lines */
+#coo {
+  width: 120px;
+  text-transform: uppercase;
+  border-left: 6px solid #6b3ea0; /* purple */
+  background: linear-gradient(90deg, #fff, #fbf6ff);
+}
+
+#lines {
+  width: 110px;
+  border-left: 6px solid #ff9f5a; /* orange */
+  background: linear-gradient(90deg, #fff, #fffaf2);
+}
+
+/* Also style the pattern inputs added earlier */
+#patternCOO {
+  border-left: 6px solid #6b3ea0;
+  text-transform: uppercase;
+}
+
+#patternLine {
+  border-left: 6px solid #ff9f5a;
+}
+
+#patternYear {
+  border-left: 6px solid #7f7fda;
+}
+
+.input-hint {
+  font-size: 12px;
+  color: #6b6b83;
+}
+
+@media (max-width: 720px) {
+  .container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  #coo, #lines {
+    width: 100%;
+  }
+}

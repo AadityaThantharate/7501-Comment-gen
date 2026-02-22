@@ -71,8 +71,11 @@ decrementBtn.addEventListener("click", () => {
 procComment.addEventListener("click", function () {
   const previewHold = document.getElementById("previewHold");
   const entry = entryInput.value.trim();
-  preview = `Shipment in use - ${entry} - 7501PROC`;
-  navigator.clipboard.writeText(`${entry} - Shipment is on hold`);
+  const coo = (document.getElementById("coo") || {}).value || "";
+  const lines = (document.getElementById("lines") || {}).value || "";
+  const suffix = ` - ${coo} - ${lines}`;
+  const preview = `Shipment in use - ${entry} - 7501PROC${suffix}`;
+  navigator.clipboard.writeText(`${entry} - Shipment is on hold${suffix}`);
   previewHold.textContent = preview;
   previewHold.classList.add("preview");
 });
@@ -94,7 +97,9 @@ exitBtn.addEventListener("click", async function () {
     return;
   }
   const input = exitInput.value.trim(" ");
-  const inputText = `Exit - ${input} - 7501 PROC`;
+  const coo = (document.getElementById("coo") || {}).value || "";
+  const lines = (document.getElementById("lines") || {}).value || "";
+  const inputText = `Exit - ${input} - 7501 PROC - ${coo} - ${lines}`;
   const preview = document.getElementById("exitsPreview");
   preview.textContent = inputText;
   preview.classList.add("preview");
@@ -118,7 +123,9 @@ siFormal.addEventListener("click", async () => {
   const input = document.getElementById("indexShips");
   const newValue = input.value;
   const previewIndex = document.getElementById("previewIndex");
-  const text = `${newValue} SI FORMAL - Index`;
+  const coo = (document.getElementById("coo") || {}).value || "";
+  const lines = (document.getElementById("lines") || {}).value || "";
+  const text = `${newValue} SI FORMAL - Index - ${coo} - ${lines}`;
   input.value = "";
 
   previewIndex.innerHTML = `<div>${text}</div>
@@ -149,7 +156,9 @@ siMulti.addEventListener("click", async () => {
   const input = document.getElementById("indexShips");
   const newValue = input.value;
   const previewIndex = document.getElementById("previewIndex");
-  const text = `${newValue} SI MUTLI - Index`;
+  const coo = (document.getElementById("coo") || {}).value || "";
+  const lines = (document.getElementById("lines") || {}).value || "";
+  const text = `${newValue} SI MUTLI - Index - ${coo} - ${lines}`;
   input.value = "";
   previewIndex.innerHTML = `<div>${text}</div>
     <div>
@@ -160,7 +169,6 @@ siMulti.addEventListener("click", async () => {
     </div>`;
   previewIndex.classList.add("preview");
   try {
-    const text = "SI MUTLI - Index";
     await navigator.clipboard.writeText(text);
   } catch (err) {
     console.error("Failed to copy:", err);
@@ -180,7 +188,9 @@ indexComplete.addEventListener("click", async () => {
   const inputs = document.getElementById("indexShips");
   const newValue = inputs.value;
   const previewIndex = document.getElementById("previewIndex");
-  const text = `${newValue} SI AUTO - Index`;
+  const coo = (document.getElementById("coo") || {}).value || "";
+  const lines = (document.getElementById("lines") || {}).value || "";
+  const text = `${newValue} SI AUTO - Index - ${coo} - ${lines}`;
   previewIndex.innerHTML = `
      <div>${text}</div>
     <div>
@@ -192,8 +202,7 @@ indexComplete.addEventListener("click", async () => {
   inputs.value = "";
   previewIndex.classList.add("preview");
   try {
-    const textConent = "SI AUTO - Index";
-    await navigator.clipboard.writeText(textConent);
+    await navigator.clipboard.writeText(text);
   } catch (err) {
     console.error("Failed to copy:", err);
   }
@@ -213,12 +222,15 @@ const latestBtn = document.getElementById("commentSeven");
 
 latestBtn.addEventListener("click", async () => {
   const inputs = document.getElementById("input75");
+  const coo = document.getElementById("coo").value;
+  const lines = document.getElementById("lines").value;
 
-  if (inputs.value.trim() === "") {
-    alert("please add Number");
+  if (inputs.value.trim() === "" || !coo || !lines) {
+    alert("Entry No, COO, and Lines required");
     return;
   }
-  const preview = `${inputs.value} - Keyed 87/01 - 7501PROC`;
+
+  const preview = `${inputs.value} - Keyed 87/01 - ${coo} - ${lines}`;
   const preview7501 = document.getElementById("preview7501");
   preview7501.textContent = preview;
   preview7501.classList.add("preview");
@@ -275,8 +287,10 @@ indexReview.addEventListener("click", async () => {
     Alllogs.push(...selected);
   });
   const addnText = document.getElementById("addComment").value;
+  const coo = (document.getElementById("coo") || {}).value || "";
+  const lines = (document.getElementById("lines") || {}).value || "";
   if (Alllogs == "Manufacture information missing") {
-    const finalselect = `Review - ${Alllogs} - ${addnText} - Index `;
+    const finalselect = `Review - ${Alllogs} - ${addnText} - Index - ${coo} - ${lines}`;
     const preview = document.getElementById("preview");
     // preview.textContent = `Review - ${finalselect} | ENTRY TYPE  To Select : SI | ATTRIBUTES  To Select : SIAUTO`;
     preview.innerHTML = `
@@ -305,7 +319,7 @@ indexReview.addEventListener("click", async () => {
     localStorage.setItem("inputLogs", JSON.stringify(logs));
     renderLogs();
   } else {
-    const finalselect = `Review - ${Alllogs} - ${addnText} - Index `;
+    const finalselect = `Review - ${Alllogs} - ${addnText} - Index - ${coo} - ${lines}`;
     const preview = document.getElementById("preview");
     preview.textContent = finalselect;
     preview.classList.add("preview");
@@ -349,7 +363,9 @@ Review7501.addEventListener("click", async () => {
   const newinputs = inputComment.value;
   console.log(newinputs);
   console.log(Alllogs);
-  const newSelect = `Review - ${Alllogs.join(" ")} ${newinputs} - 7501PROC`;
+  const coo = (document.getElementById("coo") || {}).value || "";
+  const lines = (document.getElementById("lines") || {}).value || "";
+  const newSelect = `Review - ${Alllogs.join(" ")} ${newinputs} - 7501PROC - ${coo} - ${lines}`;
   const output = document.getElementById("output");
   output.textContent = newSelect;
   output.classList.add("preview");

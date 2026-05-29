@@ -82,7 +82,10 @@
       <div>
         <h3><i data-lucide="truck"></i class='ri-information-line'> 7501 Completed Comment</h3>
 
-        <input placeholder="Enter shipment entry number" type="number" id="input75" />
+        <input list="completedCommentOptions" placeholder="Select or enter 7501 comment" type="text" id="input75" autocomplete="off" value="GN - Business Document" />
+        <datalist id="completedCommentOptions">
+          <option value="GN - Business Document"></option>
+        </datalist>
         <div class="button-group">
           <button id="commentSeven">7501 Comment</button>
           <div id="preview7501"></div>
@@ -166,13 +169,13 @@
       </div>
       <div>
         <h3><i data-lucide="database"></i>Shipment In Use</h3>
-        <input id="entry-input" type="number" placeholder="Enter Entry No..." />
+        <input id="entry-input" type="text" inputmode="text" pattern="[A-Za-z0-9\s-]*" placeholder="Enter shipment entry..." />
         <button id="proc-comment">Shipment InUse</button>
         <div id="previewHold"></div>
       </div>
       <div>
         <h3><i data-lucide="alert-circle"></i>Duplicate (Already)</h3>
-        <input id="duplicate-input" type="number" placeholder="Enter Entry No..." />
+        <input id="duplicate-input" type="text" inputmode="text" pattern="[A-Za-z0-9\s-]*" placeholder="Enter duplicate entry..." />
         <button id="duplicate-btn">Duplicate</button>
         <div id="duplicatePreview"></div>
       </div>

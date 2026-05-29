@@ -80,6 +80,16 @@ decrementBtn.addEventListener("click", () => {
 procComment.addEventListener("click", function () {
   const previewHold = document.getElementById("previewHold");
   const entry = entryInput.value.trim();
+
+  if (!entry) {
+    alert("Enter a shipment number for Shipment In Use.");
+    return;
+  }
+  if (!allowedEntryPattern.test(entry)) {
+    alert("Shipment In Use may only contain letters, numbers, spaces, and hyphens.");
+    return;
+  }
+
   const preview = `Shipment in use - ${entry} - 7501PROC`;
   navigator.clipboard.writeText(`${entry} - Shipment is on hold`);
   previewHold.textContent = preview;
@@ -90,6 +100,16 @@ if (duplicateBtn && duplicateInput) {
   duplicateBtn.addEventListener("click", async function () {
     const duplicatePreview = document.getElementById("duplicatePreview");
     const entry = duplicateInput.value.trim();
+
+    if (!entry) {
+      alert("Enter an entry number for Duplicate (Already).");
+      return;
+    }
+    if (!allowedEntryPattern.test(entry)) {
+      alert("Duplicate entry may only contain letters, numbers, spaces, and hyphens.");
+      return;
+    }
+
     const commentText = `Duplicate - Already processed, Entry Number ${entry} - 7501Proc`;
     duplicatePreview.textContent = commentText;
     duplicatePreview.classList.add("preview");
@@ -248,26 +268,54 @@ indexComplete.addEventListener("click", async () => {
 
 const latestBtn = document.getElementById("commentSeven");
 
-latestBtn.addEventListener("click", async () => {
-  const inputs = document.getElementById("input75");
-  const coo = document.getElementById("coo").value;
-  const lines = document.getElementById("lines").value;
+const completedCommentInput = document.getElementById("input75");
+if (completedCommentInput) {
+  completedCommentInput.value = "GN - Business Document";
+  completedCommentInput.addEventListener("input", () => {
+    completedCommentInput.value = completedCommentInput.value.replace(/[^A-Za-z0-9\s-]/g, "");
+  });
+}
 
-  if (inputs.value.trim() === "" || !coo || !lines) {
-    alert("Entry No, COO, and Lines required");
-    return;
+const allowedEntryPattern = /^[A-Za-z0-9\s-]+$/;
+const numericAlphaInputs = [entryInput, duplicateInput];
+numericAlphaInputs.forEach((element) => {
+  if (element) {
+    element.addEventListener("input", () => {
+      element.value = element.value.replace(/[^A-Za-z0-9\s-]/g, "");
+    });
   }
+});
 
-  const preview = `${inputs.value} - Keyed 87/01 - ${coo} - ${lines}`;
-  const preview7501 = document.getElementById("preview7501");
-  preview7501.textContent = preview;
-  preview7501.classList.add("preview");
-  inputs.value = "";
-  try {
-    await navigator.clipboard.writeText(preview);
-  } catch (err) {
-    console.error("Failed to copy:", err);
-  }
+if (latestBtn) {
+  latestBtn.addEventListener("click", async () => {
+    const inputs = document.getElementById("input75");
+    const coo = document.getElementById("coo").value;
+    const lines = document.getElementById("lines").value;
+    const commentValue = inputs?.value.trim() || "";
+    const allowedPattern = /^[A-Za-z0-9\s-]+$/;
+
+    if (!commentValue || !coo || !lines) {
+      alert("7501 comment, COO, and Lines are required");
+      return;
+    }
+    if (!allowedPattern.test(commentValue)) {
+      alert("Please use only letters, numbers, spaces, and hyphens in the 7501 comment.");
+      return;
+    }
+
+    const preview = `${commentValue} - Keyed 87/01 - ${coo} - ${lines}`;
+    const preview7501 = document.getElementById("preview7501");
+    if (preview7501) {
+      preview7501.textContent = preview;
+      preview7501.classList.add("preview");
+      preview7501.style.display = "block";
+    }
+    inputs.value = "";
+    try {
+      await navigator.clipboard.writeText(preview);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
 
   const log = {
     date: Date.now(),
@@ -281,6 +329,7 @@ latestBtn.addEventListener("click", async () => {
   inputs.value = "";
   renderLogs();
 });
+}
 
 /////////////////////////DATE GENRERATOR////////////////////////////////
 

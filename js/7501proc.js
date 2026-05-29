@@ -76,10 +76,17 @@ function updateAttributesDisplay() {
  */
 function getInputValues() {
   return {
-    coo: cooInput.value.trim().toUpperCase() || "CC",
-    lines: linesInput.value.trim() || "LL",
-    entryNo: entryNoInput.value.trim() || "EntryNo"
+    coo: cooInput.value.trim().toUpperCase(),
+    lines: linesInput.value.trim(),
+    entryNo: entryNoInput.value.trim()
   };
+}
+
+/**
+ * Join non-empty segments with - separators
+ */
+function joinCommentSegments(...segments) {
+  return segments.filter((segment) => segment && segment.toString().trim() !== "").join(" - ");
 }
 
 /**
@@ -87,7 +94,7 @@ function getInputValues() {
  */
 function updatePattern() {
   const { entryNo, coo, lines } = getInputValues();
-  patternDisplay.textContent = `${entryNo} - Keyed 87/01 - ${coo} - ${lines} - 7501Proc`;
+  patternDisplay.textContent = joinCommentSegments(entryNo, "Keyed 87/01", coo, lines, "7501Proc");
 }
 
 /**
@@ -140,8 +147,7 @@ updateAttributesDisplay();
 
 generate7501CompletedBtn.addEventListener("click", async function() {
   const { entryNo, coo, lines } = getInputValues();
-  
-  const comment = `${entryNo} - Keyed 87/01 - ${coo} - ${lines} - 7501Proc`;
+  const comment = joinCommentSegments(entryNo, "Keyed 87/01", coo, lines, "7501Proc");
   await showPreview(preview7501Completed, comment, true);
 });
 
@@ -176,8 +182,7 @@ copyReviewBtn.addEventListener("click", async function() {
 
 generateShipmentInUseBtn.addEventListener("click", async function() {
   const { entryNo, coo, lines } = getInputValues();
-  
-  const comment = `Shipment in use - ${entryNo} - ${coo} - ${lines} - 7501Proc`;
+  const comment = joinCommentSegments("Shipment in use", entryNo, coo, lines, "7501Proc");
   await showPreview(previewShipmentInUse, comment, true);
 });
 
@@ -196,8 +201,7 @@ generateExitBtn.addEventListener("click", async function() {
   
   const { coo, lines } = getInputValues();
   const exitReason = exitReasonTA.value.trim();
-  
-  const comment = `Exit - ${exitReason} - ${coo} - ${lines} - 7501Proc`;
+  const comment = joinCommentSegments("Exit", exitReason, coo, lines, "7501Proc");
   await showPreview(previewExit, comment, true);
 });
 

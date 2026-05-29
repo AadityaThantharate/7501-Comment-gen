@@ -176,6 +176,19 @@ h3 i {
   opacity: 0.9;
 }
 
+.blank-note {
+  min-height: 150px;
+  border: 1px dashed #d1d1d1;
+  border-radius: 8px;
+  background: #faf9fc;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+}
+
 /* ================= LOGS ================= */
 .logs-renders {
   padding: 6px 0;

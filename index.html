@@ -91,8 +91,7 @@
       <div>
         <h3><i data-lucide="file-text"></i> 7501 Review Comment</h3>
         <select id="dept">
-          <!-- <option value="">Select Department</option> -->
-
+          <option value="">Select Department</option>
           <option value="Country of origin">Country of origin</option>
           <option value="Description">Description</option>
           <option value="Document Missing">Document Missing</option>
@@ -107,7 +106,9 @@
         </select>
 
 
-        <select id="task"></select>
+        <select id="task">
+          <option value="">Select Task</option>
+        </select>
 
         <input type="text" placeholder="Additional Comment" id="add-comment"/>
         <button id="review7501">Copy Items</button>
@@ -127,26 +128,7 @@
 
 
     </div>
-    <div class="card">
-      <div>
-        <h3><i data-lucide="database"></i>Shipment In Use</h3>
-        <input id="entry-input" type="number" placeholder="Enter Entry No..." />
-        <button id="proc-comment">Shipment InUse</button>
-        <div id="previewHold"></div>
-      </div>
-      <div>
-        <h3><i data-lucide="alert-circle"></i>Duplicate (Already)</h3>
-        <input id="duplicate-input" type="number" placeholder="Enter Entry No..." />
-        <button id="duplicate-btn">Duplicate</button>
-        <div id="duplicatePreview"></div>
-      </div>
-    </div>
-
-
-
-
-
-    <div class="card">
+        <div class="card">
       <div>
         <h3><i data-lucide="hash"></i> HS Code Modifier</h3>
         <input id="input" type="number" placeholder="Enter HS code..." />
@@ -182,9 +164,27 @@
         </div>
         <div id="previewUnitConv"></div>
       </div>
+      <div>
+        <h3><i data-lucide="database"></i>Shipment In Use</h3>
+        <input id="entry-input" type="number" placeholder="Enter Entry No..." />
+        <button id="proc-comment">Shipment InUse</button>
+        <div id="previewHold"></div>
+      </div>
+      <div>
+        <h3><i data-lucide="alert-circle"></i>Duplicate (Already)</h3>
+        <input id="duplicate-input" type="number" placeholder="Enter Entry No..." />
+        <button id="duplicate-btn">Duplicate</button>
+        <div id="duplicatePreview"></div>
+      </div>
     </div>
 
-    <div class="card" style="display: none;">
+    <div class="card blank-card">
+      <div>
+        <h3>Review Attributes</h3>
+        <div class="blank-note">Right-side placeholder for the two review boxes you need to add.</div>
+      </div>
+    </div>
+<div class="card" style="display: none;">
       <h3><i data-lucide="clipboard-list"></i> Counter Tracker</h3>
       <div id="counter">Copied: 0 times</div>
       <input id="editInput" type="number" placeholder="Count" />

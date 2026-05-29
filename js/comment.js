@@ -80,11 +80,8 @@ decrementBtn.addEventListener("click", () => {
 procComment.addEventListener("click", function () {
   const previewHold = document.getElementById("previewHold");
   const entry = entryInput.value.trim();
-  const coo = (document.getElementById("coo") || {}).value.trim() || "";
-  const lines = (document.getElementById("lines") || {}).value.trim() || "";
-  const suffix = formatCooLines(coo, lines);
-  const preview = `Shipment in use - ${entry} - 7501PROC${suffix}`;
-  navigator.clipboard.writeText(`${entry} - Shipment is on hold${suffix}`);
+  const preview = `Shipment in use - ${entry} - 7501PROC`;
+  navigator.clipboard.writeText(`${entry} - Shipment is on hold`);
   previewHold.textContent = preview;
   previewHold.classList.add("preview");
 });
@@ -93,10 +90,7 @@ if (duplicateBtn && duplicateInput) {
   duplicateBtn.addEventListener("click", async function () {
     const duplicatePreview = document.getElementById("duplicatePreview");
     const entry = duplicateInput.value.trim();
-    const coo = (document.getElementById("coo") || {}).value.trim() || "";
-    const lines = (document.getElementById("lines") || {}).value.trim() || "";
-    const suffix = formatCooLines(coo, lines);
-    const commentText = `Duplicate - Already processed, Entry Number ${entry} - 7501Proc${suffix}`;
+    const commentText = `Duplicate - Already processed, Entry Number ${entry} - 7501Proc`;
     duplicatePreview.textContent = commentText;
     duplicatePreview.classList.add("preview");
     try {
@@ -125,10 +119,7 @@ exitBtn.addEventListener("click", async function () {
     return;
   }
   const input = exitInput.value.trim();
-  const coo = (document.getElementById("coo") || {}).value.trim() || "";
-  const lines = (document.getElementById("lines") || {}).value.trim() || "";
-  const suffix = formatCooLines(coo, lines);
-  const inputText = `Exit - ${input} - 7501 PROC${suffix}`;
+  const inputText = `Exit - ${input} - 7501 PROC`;
   const preview = document.getElementById("exitsPreview");
   preview.textContent = inputText;
   preview.classList.add("preview");
@@ -308,121 +299,132 @@ function formateDate(date) {
 //////////////////////////Index Review Block///////////////////////////
 const indexReview = document.getElementById("btn-raviewTwo");
 
-indexReview.addEventListener("click", async () => {
-  const dept = document.getElementById("deptTwo");
-  // const task = document.getElementById("taskTwo");
+if (indexReview) {
+  indexReview.addEventListener("click", async () => {
+    const dept = document.getElementById("deptTwo");
+    // const task = document.getElementById("taskTwo");
 
-  const inputs = [dept];
-  const Alllogs = [];
+    const inputs = [dept];
+    const Alllogs = [];
 
-  inputs.forEach((items) => {
-    const selected = Array.from(items.selectedOptions).map((optn) => {
-      return optn.value;
+    inputs.forEach((items) => {
+      const selected = Array.from(items.selectedOptions).map((optn) => {
+        return optn.value;
+      });
+      const letselect = selected.join(" ");
+      console.log(letselect);
+      Alllogs.push(...selected);
     });
-    const letselect = selected.join(" ");
-    console.log(letselect);
-    Alllogs.push(...selected);
+    const addnText = (document.getElementById("addComment") || {}).value || "";
+    const coo = (document.getElementById("coo") || {}).value || "";
+    const lines = (document.getElementById("lines") || {}).value || "";
+    if (Alllogs == "Manufacture information missing") {
+      const finalselect = `Review - ${Alllogs} - ${addnText} - ${coo} - ${lines} - Index `;
+      const preview = document.getElementById("preview");
+      if (preview) {
+        preview.innerHTML = `
+         <div>${finalselect}</div>
+        <div>
+            <div>ENTRY TYPE :<span style = "font-weight:bold","color:red"> UNASSIGNED </span></div>
+            <div s>ATTRIBUTE: <span style = "font-weight:bold","color:red>DISSELECT ANY </span></div>
+            <div>CAGE CODE : <span style = "font-weight:bold","color:red>CODE ONE </span></div>
+            <div>PROCESSING FLAG : <span style = "font-weight:bold","color:red>FLAG ONE </span></div>
+        </div>`;
+      }
+
+      try {
+        await navigator.clipboard.writeText(finalselect);
+        console.log("✅ Copied to clipboard:", finalselect);
+      } catch (err) {
+        alert("❌ Failed to copy: " + err);
+      }
+
+      const log = {
+        date: Date.now(),
+        action: finalselect,
+        waight: 1,
+      };
+      console.log(log);
+      logs.push(log);
+      localStorage.setItem("inputLogs", JSON.stringify(logs));
+      renderLogs();
+    } else {
+      const finalselect = `Review - ${Alllogs} - ${addnText} - Index - ${coo} - ${lines}`;
+      const preview = document.getElementById("preview");
+      if (preview) {
+        preview.textContent = finalselect;
+        preview.classList.add("preview");
+      }
+      try {
+        await navigator.clipboard.writeText(finalselect);
+        console.log("✅ Copied to clipboard:", finalselect);
+      } catch (err) {
+        alert("❌ Failed to copy: " + err);
+      }
+
+      const log = {
+        date: Date.now(),
+        action: finalselect,
+        waight: 1,
+      };
+      console.log(log);
+      logs.push(log);
+      localStorage.setItem("inputLogs", JSON.stringify(logs));
+      renderLogs();
+    }
+
+    // Copy to clipboard (fixed reference)
   });
-  const addnText = document.getElementById("addComment").value;
-  const coo = (document.getElementById("coo") || {}).value || "";
-  const lines = (document.getElementById("lines") || {}).value || "";
-  if (Alllogs == "Manufacture information missing") {
-    const finalselect = `Review - ${Alllogs} - ${addnText} - ${coo} - ${lines} - Index `;
-    const preview = document.getElementById("preview");
-    // preview.textContent = `Review - ${finalselect} | ENTRY TYPE  To Select : SI | ATTRIBUTES  To Select : SIAUTO`;
-    preview.innerHTML = `
-     <div>${finalselect}</div>
-    <div>
-        <div>ENTRY TYPE :<span style = "font-weight:bold","color:red"> UNASSIGNED </span></div>
-        <div s>ATTRIBUTE: <span style = "font-weight:bold","color:red>DISSELECT ANY </span></div>
-        <div>CAGE CODE : <span style = "font-weight:bold","color:red>CODE ONE </span></div>
-        <div>PROCESSING FLAG : <span style = "font-weight:bold","color:red>FLAG ONE </span></div>
-    </div>`;
-
-    try {
-      await navigator.clipboard.writeText(finalselect);
-      console.log("✅ Copied to clipboard:", finalselect);
-    } catch (err) {
-      alert("❌ Failed to copy: " + err);
-    }
-
-    const log = {
-      date: Date.now(),
-      action: finalselect,
-      waight: 1,
-    };
-    console.log(log);
-    logs.push(log);
-    localStorage.setItem("inputLogs", JSON.stringify(logs));
-    renderLogs();
-  } else {
-    const finalselect = `Review - ${Alllogs} - ${addnText} - Index - ${coo} - ${lines}`;
-    const preview = document.getElementById("preview");
-    preview.textContent = finalselect;
-    preview.classList.add("preview");
-    try {
-      await navigator.clipboard.writeText(finalselect);
-      console.log("✅ Copied to clipboard:", finalselect);
-    } catch (err) {
-      alert("❌ Failed to copy: " + err);
-    }
-
-    const log = {
-      date: Date.now(),
-      action: finalselect,
-      waight: 1,
-    };
-    console.log(log);
-    logs.push(log);
-    localStorage.setItem("inputLogs", JSON.stringify(logs));
-    renderLogs();
-  }
-
-  // Copy to clipboard (fixed reference)
-});
+}
 ////////////////////////////////7501 Review Block///////////////////////////
 const Review7501 = document.getElementById("review7501");
 
-Review7501.addEventListener("click", async () => {
-  const dept = document.getElementById("dept");
-  const task = document.getElementById("task");
+if (Review7501) {
+  Review7501.addEventListener("click", async () => {
+    const dept = document.getElementById("dept");
+    const task = document.getElementById("task");
+    const inputComment = document.getElementById("add-comment");
 
-  const inputs = [dept, task];
-  const Alllogs = [];
+    const selectedDept = dept?.value || "";
+    const selectedTask = task?.value || "";
+    const additionalComment = inputComment?.value.trim() || "";
 
-  inputs.forEach((items) => {
-    const selected = Array.from(items.selectedOptions).map((optn) => {
-      return optn.value;
-    });
-    Alllogs.push(...selected);
+    if (!selectedDept) {
+      alert("Please select a department for 7501 Review Comment.");
+      return;
+    }
+    if (!selectedTask) {
+      alert("Please select a task for 7501 Review Comment.");
+      return;
+    }
+
+    const commentParts = ["Review", selectedDept, selectedTask];
+    if (additionalComment) commentParts.push(additionalComment);
+    commentParts.push("7501PROC");
+
+    const newSelect = commentParts.join(" - ");
+    const output = document.getElementById("output");
+    if (output) {
+      output.textContent = newSelect;
+      output.classList.add("preview");
+    }
+
+    try {
+      await navigator.clipboard.writeText(newSelect);
+    } catch (err) {
+      alert("❌ Failed to copy: " + err);
+    }
+
+    const log = {
+      date: Date.now(),
+      action: newSelect,
+      waight: 1,
+    };
+    logs.push(log);
+    localStorage.setItem("inputLogs", JSON.stringify(logs));
+    renderLogs();
   });
-  const inputComment = document.getElementById("add-comment");
-  const newinputs = inputComment.value;
-  console.log(newinputs);
-  console.log(Alllogs);
-  const coo = (document.getElementById("coo") || {}).value || "";
-  const lines = (document.getElementById("lines") || {}).value || "";
-  const newSelect = `Review - ${Alllogs.join(" ")} ${newinputs} - 7501PROC - ${coo} - ${lines}`;
-  const output = document.getElementById("output");
-  output.textContent = newSelect;
-  output.classList.add("preview");
-
-  // ✅ Copy to clipboard
-  try {
-    await navigator.clipboard.writeText(newSelect);
-  } catch (err) {
-    alert("❌ Failed to copy: " + err);
-  }
-  const log = {
-    date: Date.now(),
-    action: newSelect,
-    waight: 1,
-  };
-  console.log(log);
-  logs.push(log);
-  localStorage.setItem("inputLogs", JSON.stringify(logs));
-  renderLogs();
-});
+}
 
 /////////////////////////////////////////////////////////
 function renderLogs() {
@@ -582,63 +584,97 @@ const task = document.getElementById("task");
 const finalSelect = [];
 const debug = document.getElementById("debug");
 
-dept.addEventListener("change", function () {
+function populateReviewTasks() {
+  if (!dept || !task) return;
+
   const deptSelect = dept.value;
-  if (deptSelect === " ") {
-    debug.textContent = "No department selected";
+  task.innerHTML = "";
+
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Select Task";
+  task.appendChild(placeholder);
+
+  if (!deptSelect) {
     return;
   }
-  task.innerHTML = "";
-  departmentTasks[deptSelect].forEach((opn) => {
+
+  const tasks = departmentTasks[deptSelect] || [];
+  tasks.forEach((opn) => {
     const option = document.createElement("option");
     option.value = opn;
     option.textContent = opn;
     task.appendChild(option);
   });
-});
+  if (debug) debug.textContent = "";
+}
 
-fetch("../json/tariffData.json")
-  .then((response) => response.json())
-  .then((data) => {
-    const tarrifinput = document.getElementById("tarrifinput");
-    const resultsContainer = document.getElementById("results");
+if (dept && task) {
+  dept.addEventListener("change", populateReviewTasks);
+  populateReviewTasks();
+}
 
-    if (tarrifinput && resultsContainer) {
-      tarrifinput.addEventListener("input", async function () {
-        const searchTerm = tarrifinput.value.toLowerCase();
-        resultsContainer.innerHTML = "";
+const tariffJsonPaths = ["json/tariffData.json", "../json/tariffData.json", "./json/tariffData.json"];
 
-        if (searchTerm.length === 0) return;
-
-        const filtered = data.filter(
-          (item) =>
-            item.description.toLowerCase().includes(searchTerm) ||
-            item.hts_code.includes(searchTerm)
-        );
-
-        filtered.forEach((item) => {
-          const div = document.createElement("div");
-          div.textContent = `${item.description} - ${item.hts_code}`;
-          div.classList.add("preview");
-          div.addEventListener("click", () => {
-            tarrifinput.value = `${item.description} - ${item.hts_code}`;
-            const hts = item.hts_code;
-            navigator.clipboard.writeText(hts);
-            resultsContainer.innerHTML = "";
-          });
-          resultsContainer.appendChild(div);
-        });
-      });
-
-      document.addEventListener("click", (e) => {
-        if (!resultsContainer.contains(e.target) && e.target !== tarrifinput) {
-          resultsContainer.innerHTML = "";
-        } else {
-          tarrifinput.value = "";
-        }
-      });
+async function loadTariffData() {
+  let data = null;
+  for (const path of tariffJsonPaths) {
+    try {
+      const response = await fetch(path);
+      if (!response.ok) continue;
+      data = await response.json();
+      break;
+    } catch (err) {
+      // try next path
     }
-  });
+  }
+
+  if (!data) {
+    console.warn("Tariff JSON data not found at expected paths.");
+    return;
+  }
+
+  const tarrifinput = document.getElementById("tarrifinput");
+  const resultsContainer = document.getElementById("results");
+
+  if (tarrifinput && resultsContainer) {
+    tarrifinput.addEventListener("input", async function () {
+      const searchTerm = tarrifinput.value.toLowerCase();
+      resultsContainer.innerHTML = "";
+
+      if (searchTerm.length === 0) return;
+
+      const filtered = data.filter(
+        (item) =>
+          item.description.toLowerCase().includes(searchTerm) ||
+          item.hts_code.includes(searchTerm)
+      );
+
+      filtered.forEach((item) => {
+        const div = document.createElement("div");
+        div.textContent = `${item.description} - ${item.hts_code}`;
+        div.classList.add("preview");
+        div.addEventListener("click", () => {
+          tarrifinput.value = `${item.description} - ${item.hts_code}`;
+          const hts = item.hts_code;
+          navigator.clipboard.writeText(hts);
+          resultsContainer.innerHTML = "";
+        });
+        resultsContainer.appendChild(div);
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!resultsContainer.contains(e.target) && e.target !== tarrifinput) {
+        resultsContainer.innerHTML = "";
+      } else {
+        tarrifinput.value = "";
+      }
+    });
+  }
+}
+
+loadTariffData();
 
 // Highlight active page
 document.querySelectorAll(".tab").forEach((tab) => {

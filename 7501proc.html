@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7501 PROC Comment Generator</title>
+  <link rel="stylesheet" href="css/comment.css" />
+  <link rel="stylesheet" href="css/7501proc.css" />
+  <style>
+    /* Popup Notification */
+    #popup {
+      position: fixed;
+      bottom: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #388E3C;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      z-index: 1000;
+      transition: bottom 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    #popup.show {
+      bottom: 20px;
+    }
+    /* Display Box for Entry Type & Attributes */
+    .display-box {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #e6dff6;
+      background: #fffafc;
+      font-size: 13px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+    }
+    .display-box span {
+      color: #666;
+    }
+  </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <h2 style="color: white; margin: 0; font-size: 16px;">7501 PROC Comment Generator</h2>
+    </div>
+    <div id="results" class="results"></div>
+    <nav class="tabs">
+      <a class="tab" href="html/fedex.html">MID Generator</a>
+      <a class="tab" href="html/index.html">Checklist</a>
+      <a class="tab" href="index.html">Comment Generator</a>
+      <a class="tab orange" href="7501proc.html">7501 PROC</a>
+      <a class="tab">Personal Use</a>
+    </nav>
+  </header>
+
+  <!-- Top Input Section -->
+  <div class="header-section">
+    <div class="input-row">
+      <div class="input-group">
+        <label>Country of Origin</label>
+        <input type="text" id="coo" placeholder="e.g., TR" maxlength="2" />
+      </div>
+      <div class="input-group">
+        <label># of Lines</label>
+        <input type="text" id="lines" placeholder="e.g., 01" maxlength="3" />
+      </div>
+      <div class="input-group">
+        <label>Entry Number</label>
+        <input type="text" id="entryNo" placeholder="e.g., 1FX02595485" />
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="input-group">
+        <label>Entry Type</label>
+        <div id="entryTypeDisplay" class="display-box">
+          <select id="entryType" style="display:none;">
+            <option value="">Select Entry Type</option>
+            <option value="UNASSIGNED">UNASSIGNED</option>
+            <option value="FORMAL">FORMAL</option>
+            <option value="INFORMAL">INFORMAL</option>
+            <option value="CONSUMPTION">CONSUMPTION</option>
+          </select>
+          <span id="entryTypeText">None Selected</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Attributes To Select</label>
+        <div id="attributesDisplay" class="display-box">
+          <select id="attributes" style="display:none;">
+            <option value="">Select Attribute</option>
+            <option value="High Risk">High Risk</option>
+            <option value="Watches">Watches</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Textiles">Textiles</option>
+          </select>
+          <span id="attributesText">None Selected</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid Layout -->
+  <section class="proc-grid">
+    <!-- LEFT COLUMN: COMPLETED & REVIEW -->
+    <div class="column">
+      <!-- 7501 Completed Comment -->
+      <div class="proc-card">
+        <div class="card-header">
+          <h3>7501 Completed Comment</h3>
+        </div>
+        <div class="card-body">
+          <button id="generate7501Completed" class="btn btn-primary">Generate Comment</button>
+          <div id="preview7501Completed" class="preview-box"></div>
+          <button id="copy7501Completed" class="btn btn-secondary">Copy</button>
+        </div>
+      </div>
+
+      <!-- 7501 Review Comment -->
+      <div class="proc-card">
+        <div class="card-header">
+          <h3>7501 Review Comment</h3>
+        </div>
+        <div class="card-body">
+          <div class="input-group">
+            <label>Reason for Review</label>
+            <select id="reasonForReview">
+              <option value="">Select Reason</option>
+              <option value="Country of origin">Country of Origin</option>
+              <option value="Description">Description</option>
+              <option value="Document missing">Document Missing</option>
+              <option value="Duplex error">Duplex Error</option>
+              <option value="Paper work">Paper Work</option>
+              <option value="Parties">Parties</option>
+              <option value="Value">Value</option>
+              <option value="Quantity">Quantity</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Sub Reason</label>
+            <select id="subReason">
+              <option value="">Select Sub Reason</option>
+              <option value="Better description required">Better description required</option>
+              <option value="Invoice is not clear">Invoice is not clear</option>
+              <option value="Manufacturer details required">Manufacturer details required</option>
+              <option value="Invalid entry error">Invalid entry error</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Additional Comment</label>
+            <textarea id="additionalComment" placeholder="Optional remarks..." style="height: 60px;"></textarea>
+          </div>
+
+          <button id="generateReview" class="btn btn-primary">Generate Comment</button>
+          <div id="previewReview" class="preview-box"></div>
+          <button id="copyReview" class="btn btn-secondary">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER COLUMN: SHIPMENT IN USE & EXIT -->
+    <div class="column">
+      <!-- Shipment In Use -->
+      <div class="proc-card">
+        <div class="card-header">
+          <h3>Shipment In Use</h3>
+        </div>
+        <div class="card-body">
+          <button id="generateShipmentInUse" class="btn btn-primary">Generate Comment</button>
+          <div id="previewShipmentInUse" class="preview-box"></div>
+          <button id="copyShipmentInUse" class="btn btn-secondary">Copy</button>
+        </div>
+      </div>
+
+      <!-- Exit Shipment -->
+      <div class="proc-card">
+        <div class="card-header">
+          <h3>Exit Shipment</h3>
+        </div>
+        <div class="card-body">
+          <div class="input-group">
+            <label>Exit Reason</label>
+            <textarea id="exitReason" placeholder="Enter reason for exit..." style="height: 80px;"></textarea>
+          </div>
+
+          <button id="generateExit" class="btn btn-primary">Generate Comment</button>
+          <div id="previewExit" class="preview-box"></div>
+          <button id="copyExit" class="btn btn-secondary">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: HS CODE MODIFIER -->
+    <div class="column">
+      <!-- HS Code Modifier -->
+      <div class="proc-card">
+        <div class="card-header">
+          <h3>HS Code Modifier</h3>
+        </div>
+        <div class="card-body">
+          <div class="input-group">
+            <label>Enter HS/Tariff Code</label>
+            <input type="text" id="hscodeInput" placeholder="e.g., 1234.56.78" />
+          </div>
+
+          <button id="generateHSCode" class="btn btn-primary">Format & Copy</button>
+          <div id="previewHSCode" class="preview-box"></div>
+          <button id="copyHSCode" class="btn btn-secondary">Copy Code</button>
+        </div>
+      </div>
+
+      <!-- Pattern Display -->
+      <div class="proc-card pattern-card">
+        <div class="card-header">
+          <h3>Generated Pattern</h3>
+        </div>
+        <div class="card-body">
+          <div id="patternDisplay" class="pattern-display">
+            EntryNo - Keyed YY/LL - COO - Lines - 7501Proc
+          </div>
+          <p style="font-size: 12px; color: #999; margin-top: 8px; text-align: center;">
+            Auto-updated with your inputs
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popup Notification -->
+  <div id="popup"></div>
+
+  <script src="js/7501proc.js"></script>
+</body>
+
+</html>

@@ -130,6 +130,31 @@ h3 i {
   width: 100%;
   margin-top: 8px;
 }
+.unit-converter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.unit-converter-row > input,
+.unit-converter-row > select {
+  flex: 1;
+  min-width: 160px;
+  width: auto;
+}
+.unit-converter-row > button {
+  flex: 1;
+  min-width: 120px;
+  width: auto;
+  margin-top: 8px;
+}
+.buttons-row {
+  justify-content: flex-start;
+}
+.buttons-row > button {
+  flex: 0 0 auto;
+}
 #Hscode {
   margin-top: 8px;
 }

@@ -8,8 +8,17 @@ const decrementBtn = document.getElementById("decrement");
 const comment = document.getElementById("comment");
 const procComment = document.getElementById("proc-comment");
 const entryInput = document.getElementById("entry-input");
+const duplicateBtn = document.getElementById("duplicate-btn");
+const duplicateInput = document.getElementById("duplicate-input");
 const editBtn = document.getElementById("edit");
 const editInput = document.getElementById("editInput");
+
+function formatCooLines(coo, lines) {
+  const parts = [];
+  if (coo) parts.push(coo);
+  if (lines) parts.push(lines);
+  return parts.length ? ` - ${parts.join(" - ")}` : "";
+}
 
 //////////////////////////
 //  localStorage with logs//////////
@@ -71,14 +80,33 @@ decrementBtn.addEventListener("click", () => {
 procComment.addEventListener("click", function () {
   const previewHold = document.getElementById("previewHold");
   const entry = entryInput.value.trim();
-  const coo = (document.getElementById("coo") || {}).value || "";
-  const lines = (document.getElementById("lines") || {}).value || "";
-  const suffix = ` - ${coo} - ${lines}`;
+  const coo = (document.getElementById("coo") || {}).value.trim() || "";
+  const lines = (document.getElementById("lines") || {}).value.trim() || "";
+  const suffix = formatCooLines(coo, lines);
   const preview = `Shipment in use - ${entry} - 7501PROC${suffix}`;
   navigator.clipboard.writeText(`${entry} - Shipment is on hold${suffix}`);
   previewHold.textContent = preview;
   previewHold.classList.add("preview");
 });
+
+if (duplicateBtn && duplicateInput) {
+  duplicateBtn.addEventListener("click", async function () {
+    const duplicatePreview = document.getElementById("duplicatePreview");
+    const entry = duplicateInput.value.trim();
+    const coo = (document.getElementById("coo") || {}).value.trim() || "";
+    const lines = (document.getElementById("lines") || {}).value.trim() || "";
+    const suffix = formatCooLines(coo, lines);
+    const commentText = `Duplicate - Already processed, Entry Number ${entry} - 7501Proc${suffix}`;
+    duplicatePreview.textContent = commentText;
+    duplicatePreview.classList.add("preview");
+    try {
+      await navigator.clipboard.writeText(commentText);
+    } catch (err) {
+      console.error("Failed to copy duplicate comment:", err);
+      alert("Unable to copy to clipboard. Please allow clipboard access or try again.");
+    }
+  });
+}
 
 editBtn.addEventListener("click", () => {
   const newVal = Number(editInput.value);
@@ -96,10 +124,11 @@ exitBtn.addEventListener("click", async function () {
     alert("Please Add Reason for Exit");
     return;
   }
-  const input = exitInput.value.trim(" ");
-  const coo = (document.getElementById("coo") || {}).value || "";
-  const lines = (document.getElementById("lines") || {}).value || "";
-  const inputText = `Exit - ${input} - 7501 PROC - ${coo} - ${lines}`;
+  const input = exitInput.value.trim();
+  const coo = (document.getElementById("coo") || {}).value.trim() || "";
+  const lines = (document.getElementById("lines") || {}).value.trim() || "";
+  const suffix = formatCooLines(coo, lines);
+  const inputText = `Exit - ${input} - 7501 PROC${suffix}`;
   const preview = document.getElementById("exitsPreview");
   preview.textContent = inputText;
   preview.classList.add("preview");
@@ -119,13 +148,14 @@ const indexComplete = document.getElementById("indexComplete");
 
 // Indexing Completed shipements //////////
 const siFormal = document.getElementById("siFormal");
+if (siFormal) {
 siFormal.addEventListener("click", async () => {
   const input = document.getElementById("indexShips");
   const newValue = input.value;
   const previewIndex = document.getElementById("previewIndex");
   const coo = (document.getElementById("coo") || {}).value || "";
   const lines = (document.getElementById("lines") || {}).value || "";
-  const text = `${newValue} SI FORMAL - Index - ${coo} - ${lines}`;
+  const text = `${newValue} SI FORMAL - ${coo} - ${lines} - Index`;
   input.value = "";
 
   previewIndex.innerHTML = `<div>${text}</div>
@@ -152,13 +182,17 @@ siFormal.addEventListener("click", async () => {
   localStorage.setItem("inputLogs", JSON.stringify(logs));
   renderLogs();
 });
+}
+
+const siMulti = document.getElementById("siMulti");
+if (siMulti) {
 siMulti.addEventListener("click", async () => {
   const input = document.getElementById("indexShips");
   const newValue = input.value;
   const previewIndex = document.getElementById("previewIndex");
   const coo = (document.getElementById("coo") || {}).value || "";
   const lines = (document.getElementById("lines") || {}).value || "";
-  const text = `${newValue} SI MUTLI - Index - ${coo} - ${lines}`;
+  const text = `${newValue} SI MUTLI - ${coo} - ${lines} - Index`;
   input.value = "";
   previewIndex.innerHTML = `<div>${text}</div>
     <div>
@@ -183,14 +217,16 @@ siMulti.addEventListener("click", async () => {
   localStorage.setItem("inputLogs", JSON.stringify(logs));
   renderLogs();
 });
+}
 
+if (indexComplete) {
 indexComplete.addEventListener("click", async () => {
   const inputs = document.getElementById("indexShips");
   const newValue = inputs.value;
   const previewIndex = document.getElementById("previewIndex");
   const coo = (document.getElementById("coo") || {}).value || "";
   const lines = (document.getElementById("lines") || {}).value || "";
-  const text = `${newValue} SI AUTO - Index - ${coo} - ${lines}`;
+  const text = `${newValue} SI AUTO - ${coo} - ${lines} - Index`;
   previewIndex.innerHTML = `
      <div>${text}</div>
     <div>
@@ -217,6 +253,7 @@ indexComplete.addEventListener("click", async () => {
   localStorage.setItem("inputLogs", JSON.stringify(logs));
   renderLogs();
 });
+}
 
 const latestBtn = document.getElementById("commentSeven");
 
@@ -290,7 +327,7 @@ indexReview.addEventListener("click", async () => {
   const coo = (document.getElementById("coo") || {}).value || "";
   const lines = (document.getElementById("lines") || {}).value || "";
   if (Alllogs == "Manufacture information missing") {
-    const finalselect = `Review - ${Alllogs} - ${addnText} - Index - ${coo} - ${lines}`;
+    const finalselect = `Review - ${Alllogs} - ${addnText} - ${coo} - ${lines} - Index `;
     const preview = document.getElementById("preview");
     // preview.textContent = `Review - ${finalselect} | ENTRY TYPE  To Select : SI | ATTRIBUTES  To Select : SIAUTO`;
     preview.innerHTML = `
@@ -415,27 +452,34 @@ function renderLogs() {
   ).innerHTML = `Total Actions : ${total}`;
 }
 
-document.getElementById("actionLog").addEventListener("click", function (e) {
-  if (e.target.classList.contains("delete-btn")) {
-    const index = e.target.dataset.index;
-    logs.splice(index, 1);
-    localStorage.setItem("inputLogs", JSON.stringify(logs));
-    renderLogs();
-  }
-});
+const actionLogEl = document.getElementById("actionLog");
+if (actionLogEl) {
+  actionLogEl.addEventListener("click", function (e) {
+    if (e.target.classList.contains("delete-btn")) {
+      const index = e.target.dataset.index;
+      logs.splice(index, 1);
+      localStorage.setItem("inputLogs", JSON.stringify(logs));
+      renderLogs();
+    }
+  });
+}
 /////Reset Button activity ////////////////
 const drawer = document.getElementById("activityDrawer");
 const openBtn = document.getElementById("actionLog");
 const closeBtn = document.getElementById("closeDrawer");
 
-openBtn.addEventListener("click", () => {
-  drawer.classList.add("open");
-  renderLogs();
-});
+if (openBtn && drawer) {
+  openBtn.addEventListener("click", () => {
+    drawer.classList.add("open");
+    renderLogs();
+  });
+}
 
-closeBtn.addEventListener("click", () => {
-  drawer.classList.remove("open");
-});
+if (closeBtn && drawer) {
+  closeBtn.addEventListener("click", () => {
+    drawer.classList.remove("open");
+  });
+}
 document
   .getElementById("logsContainer")
   .addEventListener("click", function (e) {
@@ -461,56 +505,76 @@ resetActivity.addEventListener("click", function () {
 });
 
 const departmentTasks = {
-  "Country of origin": ["Country code invalid"],
+  "Country of origin": [
+    "Country Code Invalid"
+  ],
 
   Description: [
-    "Better description required",
-    "Kit breakdown – multiple line request",
+    "Better Description Required",
+    "Kit Breakdown. Multiple line request"
   ],
 
-  "Document missing": [
-    "APHIS core processing / disclaimer required",
+  "Document Missing": [
+    "APHIS core Processing/disclaim required",
     "MFG details needed",
     "FDA document required",
-    "License information",
-    "Motor worksheet required",
+    "Lacey Information",
+    "Motor Worksheet Required",
     "Invoice missing",
-    "ISF BOX",
-    "ADD/CVD missing",
-    "Ukraine sanction form",
+    "HS7 BOX",
+    "ADD/CVD Missing",
+    "Ukraine Sanction form"
   ],
 
-  "Duplex error": [
-    "00477 Entry voided",
-    "CNEE profile built with temp tax-id must be keyed app 90 send to review",
-    "Manufacturers PWDBW not found",
-    "No release consignee selected",
-    "This needs to 90/G – No access",
-    "Invalid entry error",
-    "Built to manifest",
-    "ENTRY CAN NOT BE RESUMED. NOT IN PROPER STATUS",
-    "Tariff restricted",
+  "Duplex Error": [
+    "00477 Entry Voided",
+    "01624 Warning Duplicate combo of bill NBRS on another Manifest",
+    "CNEE profile built tax-id must be keyed app 90 send to review",
+    "Manufacture PWBID not found",
+    "No Release Consignee Selected",
+    "This Needs 90/6 - No access",
+    "Invalid Entry Error",
+    "Build to manifest",
+    "ENTRY CAN NOT BE RESUMED.NOT IN PROPER STATUS",
+    "Tariff restricted"
   ],
 
-  "Paper work": ["Invoice is not clear", "Need invoice in English language"],
+  "Paper Work": [
+    "Invoice is not clear",
+    "Need Invoice in English language"
+  ],
 
   Parties: [
-    "IMPNO consignee IRS no not found",
-    "IMPNO consignee PWDD no not found",
-    "Manufacturing details required for invoice textile description",
+    "IMPNO consignee IRS no not Found",
+    "IMPNO consignee PWDID no not Found",
+    "Manufacturing details Required for Invoice Textile description",
+    "Shipper postal code incorrect",
     "BROKER INFO",
-    "Special instructions available in CCA",
-    "Special instruction available in SAP",
-    "Shipment for IRS",
+    "Special Instructions available in CCP",
+    "Special Instruction available in SBP",
+    "Shipment for IRS"
   ],
 
-  Value: ["Value mismatch between Jupiter and CI", "Value breakdown needed"],
+  Value: [
+    "Value mismatch between Jupiter and CI",
+    "Value Break down needed"
+  ],
 
-  Quantity: ["Unit of measurement missing"],
+  Quantity: [
+    "Unit of measurement missing"
+  ],
 
-  "Shipment contains diamond": ["1B to Handle"],
+  "Shipment Contains Diamond": [
+    "1B to Handle"
+  ],
 
-  "Reason not listed": ["No sub reason"],
+  Watches: [
+    "Shipment Contains Watch"
+  ],
+
+  "Reason not listed": [
+    "No sub reason"
+  ]
 };
 
 const dept = document.getElementById("dept");
@@ -539,39 +603,41 @@ fetch("../json/tariffData.json")
     const tarrifinput = document.getElementById("tarrifinput");
     const resultsContainer = document.getElementById("results");
 
-    tarrifinput.addEventListener("input", async function () {
-      const searchTerm = tarrifinput.value.toLowerCase();
-      resultsContainer.innerHTML = "";
-
-      if (searchTerm.length === 0) return;
-
-      const filtered = data.filter(
-        (item) =>
-          item.description.toLowerCase().includes(searchTerm) ||
-          item.hts_code.includes(searchTerm)
-      );
-
-      filtered.forEach((item) => {
-        const div = document.createElement("div");
-        div.textContent = `${item.description} - ${item.hts_code}`;
-        div.classList.add("preview");
-        div.addEventListener("click", () => {
-          tarrifinput.value = `${item.description} - ${item.hts_code}`;
-          const hts = item.hts_code;
-          navigator.clipboard.writeText(hts);
-          resultsContainer.innerHTML = "";
-        });
-        resultsContainer.appendChild(div);
-      });
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!resultsContainer.contains(e.target) && e.target !== tarrifinput) {
+    if (tarrifinput && resultsContainer) {
+      tarrifinput.addEventListener("input", async function () {
+        const searchTerm = tarrifinput.value.toLowerCase();
         resultsContainer.innerHTML = "";
-      } else {
-        tarrifinput.value = "";
-      }
-    });
+
+        if (searchTerm.length === 0) return;
+
+        const filtered = data.filter(
+          (item) =>
+            item.description.toLowerCase().includes(searchTerm) ||
+            item.hts_code.includes(searchTerm)
+        );
+
+        filtered.forEach((item) => {
+          const div = document.createElement("div");
+          div.textContent = `${item.description} - ${item.hts_code}`;
+          div.classList.add("preview");
+          div.addEventListener("click", () => {
+            tarrifinput.value = `${item.description} - ${item.hts_code}`;
+            const hts = item.hts_code;
+            navigator.clipboard.writeText(hts);
+            resultsContainer.innerHTML = "";
+          });
+          resultsContainer.appendChild(div);
+        });
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!resultsContainer.contains(e.target) && e.target !== tarrifinput) {
+          resultsContainer.innerHTML = "";
+        } else {
+          tarrifinput.value = "";
+        }
+      });
+    }
   });
 
 // Highlight active page
@@ -583,13 +649,14 @@ document.querySelectorAll(".tab").forEach((tab) => {
 
 const activitySelect = document.getElementById("activitySelect");
 
-activitySelect.addEventListener("change", () => {
-  confirm("are you sure want to Set Activity?");
-  const selectedActivity = activitySelect.value;
-  console.log("Selected activity:", selectedActivity);
-  console.log(Date.now());
+if (activitySelect) {
+  activitySelect.addEventListener("change", () => {
+    confirm("are you sure want to Set Activity?");
+    const selectedActivity = activitySelect.value;
+    console.log("Selected activity:", selectedActivity);
+    console.log(Date.now());
 
-  const log = {
+    const log = {
     action: selectedActivity,
     date: Date.now(),
     waight: 0,
@@ -599,6 +666,7 @@ activitySelect.addEventListener("change", () => {
   localStorage.setItem("inputLogs", JSON.stringify(logs));
   renderLogs();
 });
+}
 
 const idleLogs = document.getElementById("idleLogs");
 idleLogs.innerHTML = ""; // clear UI
@@ -624,9 +692,12 @@ for (let i = 0; i < logs.length - 1; i++) {
 
 const IDLE_LIMIT_MIN = 25;
 
-document.getElementById("exportExcel").addEventListener("click", () => {
-  exportLogsToExcel(logs);
-});
+const exportExcelEl = document.getElementById("exportExcel");
+if (exportExcelEl) {
+  exportExcelEl.addEventListener("click", () => {
+    exportLogsToExcel(logs);
+  });
+}
 
 function exportLogsToExcel(logs) {
   if (!logs || logs.length === 0) {
@@ -678,47 +749,284 @@ function exportLogsToExcel(logs) {
 
   XLSX.writeFile(workbook, "User_Activity_Logs.xlsx");
 }
-////////////////////// Unit Converstion//////////////////////////////////
+////////////////////// Unit Conversion //////////////////////////////////
 
-const convertBtn = document.getElementById("convertBtn");
-const unitSelect = document.getElementById("unitSelect");
-const inputUnit = document.getElementById("inputUnit");
-const previewUnit = document.getElementById("previewUnitConv");
+const categoryUnits = {
+  length: [
+    { value: "meter", label: "Meter" },
+    { value: "kilometer", label: "Kilometer" },
+    { value: "centimeter", label: "Centimeter" },
+    { value: "millimeter", label: "Millimeter" },
+    { value: "micrometer", label: "Micrometer" },
+    { value: "nanometer", label: "Nanometer" },
+    { value: "mile", label: "Mile" },
+    { value: "yard", label: "Yard" },
+    { value: "foot", label: "Foot" },
+    { value: "inch", label: "Inch" },
+    { value: "lightyear", label: "Light Year" }
+  ],
+  temperature: [
+    { value: "celsius", label: "Celsius" },
+    { value: "fahrenheit", label: "Fahrenheit" },
+    { value: "kelvin", label: "Kelvin" }
+  ],
+  area: [
+    { value: "squaremeter", label: "Square Meter" },
+    { value: "squarekilometer", label: "Square Kilometer" },
+    { value: "squarecentimeter", label: "Square Centimeter" },
+    { value: "squaremillimeter", label: "Square Millimeter" },
+    { value: "squaremicrometer", label: "Square Micrometer" },
+    { value: "hectare", label: "Hectare" },
+    { value: "squaremile", label: "Square Mile" },
+    { value: "squareyard", label: "Square Yard" },
+    { value: "squarefoot", label: "Square Foot" },
+    { value: "squareinch", label: "Square Inch" },
+    { value: "acre", label: "Acre" }
+  ],
+  volume: [
+    { value: "cubemeter", label: "Cubic Meter" },
+    { value: "cubekilometer", label: "Cubic Kilometer" },
+    { value: "cubecentimeter", label: "Cubic Centimeter" },
+    { value: "cubemillimeter", label: "Cubic Millimeter" },
+    { value: "liter", label: "Liter" },
+    { value: "milliliter", label: "Milliliter" },
+    { value: "usgallon", label: "US Gallon" },
+    { value: "usform", label: "US Quart" },
+    { value: "uspint", label: "US Pint" },
+    { value: "uscup", label: "US Cup" },
+    { value: "usfloz", label: "US Fluid Ounce" }
+  ],
+  weight: [
+    { value: "kilogram", label: "Kilogram" },
+    { value: "gram", label: "Gram" },
+    { value: "milligram", label: "Milligram" },
+    { value: "metrictone", label: "Metric Ton" },
+    { value: "longton", label: "Long Ton" },
+    { value: "shortton", label: "Short Ton" },
+    { value: "pound", label: "Pound" },
+    { value: "ounce", label: "Ounce" },
+    { value: "carat", label: "Carat" },
+    { value: "atomicmassunit", label: "Atomic Mass Unit" }
+  ]
+};
 
-// function convertUnit() {
-//   convertBtn.addEventListener("click", function () {
+const conversionFactors = {
+  length: {
+    meter: 1,
+    kilometer: 1000,
+    centimeter: 0.01,
+    millimeter: 0.001,
+    micrometer: 1e-6,
+    nanometer: 1e-9,
+    mile: 1609.344,
+    yard: 0.9144,
+    foot: 0.3048,
+    inch: 0.0254,
+    lightyear: 9.4607e15
+  },
+  area: {
+    squaremeter: 1,
+    squarekilometer: 1e6,
+    squarecentimeter: 0.0001,
+    squaremillimeter: 1e-6,
+    squaremicrometer: 1e-12,
+    hectare: 10000,
+    squaremile: 2.59e6,
+    squareyard: 0.83612736,
+    squarefoot: 0.09290304,
+    squareinch: 0.00064516,
+    acre: 4046.8564224
+  },
+  volume: {
+    cubemeter: 1,
+    cubekilometer: 1e9,
+    cubecentimeter: 1e-6,
+    cubemillimeter: 1e-9,
+    liter: 0.001,
+    milliliter: 1e-6,
+    usgallon: 0.003785411784,
+    usform: 0.000946352946,
+    uspint: 0.000473176473,
+    uscup: 0.0002365882365,
+    usfloz: 2.95735295625e-5
+  },
+  weight: {
+    kilogram: 1,
+    gram: 0.001,
+    milligram: 1e-6,
+    metrictone: 1000,
+    longton: 1016.0469088,
+    shortton: 907.18474,
+    pound: 0.45359237,
+    ounce: 0.028349523125,
+    carat: 0.0002,
+    atomicmassunit: 1.66053906660e-27
+  }
+};
 
-//   });
-// }
+function setUnitOptions(category, unitSelect) {
+  unitSelect.innerHTML = "";
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Select Unit";
+  unitSelect.appendChild(placeholder);
 
-unitSelect.addEventListener("change", function () {
-  const selectValue = unitSelect.value;
-
-  if (inputUnit.value.trim() === " ") {
-    alert("Please enter Value to Convert");
+  if (!category || !categoryUnits[category]) {
     return;
   }
-  if (selectValue === "Gross") {
-    const input = inputUnit.value;
-    const grossValue = input / 10;
-    navigator.clipboard.writeText(grossValue.toFixed(2));
-    previewUnit.innerHTML = grossValue.toFixed(2);
-    previewUnit.classList.add("preview");
-  } else if (selectValue === "Dozen") {
-    const dozen = inputUnit.value / 12;
-    navigator.clipboard.writeText(dozen.toFixed(2));
-    previewUnit.innerHTML = dozen.toFixed(2);
-    previewUnit.classList.add("preview");
-  } else if (selectValue === "Piece") {
-    const piece = inputUnit.value / 10;
-    navigator.clipboard.writeText(piece);
-    previewUnit.classList.add("preview");
-  } else if (selectValue === "Pair") {
-    const pair = inputUnit.value / 2;
-    navigator.clipboard.writeText(pair.toFixed(2));
-    previewUnit.textContent = pair.toFixed(2);
-    previewUnit.classList.add("preview");
+
+  categoryUnits[category].forEach(unit => {
+    const option = document.createElement("option");
+    option.value = unit.value;
+    option.textContent = unit.label;
+    unitSelect.appendChild(option);
+  });
+}
+
+function formatNumber(value) {
+  return Number(value).toFixed(2);
+}
+
+function convertTemperature(value, fromUnit, toUnit) {
+  let celsius;
+  if (fromUnit === "celsius") {
+    celsius = value;
+  } else if (fromUnit === "fahrenheit") {
+    celsius = (value - 32) * 5 / 9;
+  } else if (fromUnit === "kelvin") {
+    celsius = value - 273.15;
   }
-  inputUnit.value = "";
-  selectValue.value = "";
-});
+
+  if (toUnit === "celsius") {
+    return celsius;
+  }
+  if (toUnit === "fahrenheit") {
+    return celsius * 9 / 5 + 32;
+  }
+  if (toUnit === "kelvin") {
+    return celsius + 273.15;
+  }
+  return value;
+}
+
+function convertWithFactor(value, category, fromUnit, toUnit) {
+  const factors = conversionFactors[category];
+  const fromFactor = factors[fromUnit];
+  const toFactor = factors[toUnit];
+  const baseValue = value * fromFactor;
+  return baseValue / toFactor;
+}
+
+function buildSingleConversionResult(category, amount, fromUnit, toUnit) {
+  if (!category || !fromUnit || !toUnit) {
+    return null;
+  }
+
+  let convertedValue;
+  if (category === "temperature") {
+    convertedValue = convertTemperature(amount, fromUnit, toUnit);
+  } else {
+    convertedValue = convertWithFactor(amount, category, fromUnit, toUnit);
+  }
+
+  const fromLabel =
+    categoryUnits[category].find((unit) => unit.value === fromUnit)?.label ||
+    fromUnit;
+  const toLabel =
+    categoryUnits[category].find((unit) => unit.value === toUnit)?.label ||
+    toUnit;
+
+  return `${formatNumber(amount)} ${fromLabel} = ${formatNumber(convertedValue)} ${toLabel}`;
+}
+
+function showPreview(resultText, previewUnit) {
+  previewUnit.innerHTML = "";
+  const content = document.createElement("div");
+  content.textContent = resultText;
+  previewUnit.appendChild(content);
+  previewUnit.classList.add("preview");
+  previewUnit.style.display = "flex";
+}
+
+function initializeUnitConversion() {
+  const categorySelect = document.getElementById("categorySelect");
+  const convertBtn = document.getElementById("convertBtn");
+  const fromUnitSelect = document.getElementById("fromUnitSelect");
+  const toUnitSelect = document.getElementById("toUnitSelect");
+  const inputUnit = document.getElementById("inputUnit");
+  const previewUnit = document.getElementById("previewUnitConv");
+
+  if (
+    !categorySelect ||
+    !convertBtn ||
+    !fromUnitSelect ||
+    !toUnitSelect ||
+    !inputUnit ||
+    !previewUnit
+  ) {
+    console.warn("Unit conversion elements are missing from the page.");
+    return;
+  }
+
+  previewUnit.style.display = "none";
+
+  categorySelect.addEventListener("change", function () {
+    setUnitOptions(categorySelect.value, fromUnitSelect);
+    setUnitOptions(categorySelect.value, toUnitSelect);
+    previewUnit.innerHTML = "";
+  });
+
+  convertBtn.addEventListener("click", function () {
+    const category = categorySelect.value;
+    const fromUnit = fromUnitSelect.value;
+    const toUnit = toUnitSelect.value;
+    const rawValue = inputUnit.value.trim();
+    const amount = parseFloat(rawValue);
+
+    if (!rawValue || isNaN(amount)) {
+      alert("Please enter a valid number to convert.");
+      return;
+    }
+    if (!category) {
+      alert("Please choose a category first.");
+      return;
+    }
+    if (!fromUnit || !toUnit) {
+      alert("Please choose both the from and to units.");
+      return;
+    }
+
+    const resultText = buildSingleConversionResult(
+      category,
+      amount,
+      fromUnit,
+      toUnit
+    );
+    if (resultText) {
+      showPreview(resultText, previewUnit);
+      const convertedValue =
+        category === "temperature"
+          ? convertTemperature(amount, fromUnit, toUnit)
+          : convertWithFactor(amount, category, fromUnit, toUnit);
+      navigator.clipboard.writeText(formatNumber(convertedValue)).catch(() => {});
+    }
+  });
+
+  const resetConvertBtn = document.getElementById("resetConvertBtn");
+  if (resetConvertBtn) {
+    resetConvertBtn.addEventListener("click", function () {
+      inputUnit.value = "";
+      categorySelect.value = "";
+      fromUnitSelect.innerHTML = "<option value=''>From Unit</option>";
+      toUnitSelect.innerHTML = "<option value=''>To Unit</option>";
+      previewUnit.innerHTML = "";
+      previewUnit.style.display = "none";
+    });
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeUnitConversion);
+} else {
+  initializeUnitConversion();
+}

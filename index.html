@@ -181,10 +181,18 @@
       </div>
     </div>
 
-    <div class="card blank-card">
+    <div class="card blank-card review-attributes-card">
       <div>
         <h3>Review Attributes</h3>
-        <div class="blank-note">Right-side placeholder for the two review boxes you need to add.</div>
+        <div class="field-group">
+          <label for="entryTypeText">Entry Type</label>
+          <input id="entryTypeText" type="text" readonly value="Do not make any changes" />
+        </div>
+        <div class="field-group">
+          <label for="attributesText">Attributes to Select</label>
+          <input id="attributesText" type="text" readonly value="None Selected" />
+        </div>
+        <div id="attributesNote" class="attributes-note">Enter a completed comment or use review options to see the suggested attribute.</div>
       </div>
     </div>
 <div class="card" style="display: none;">

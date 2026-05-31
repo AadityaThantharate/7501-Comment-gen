@@ -267,14 +267,73 @@ indexComplete.addEventListener("click", async () => {
 }
 
 const latestBtn = document.getElementById("commentSeven");
+const entryTypeText = document.getElementById("entryTypeText");
+const attributesText = document.getElementById("attributesText");
+const attributesNote = document.getElementById("attributesNote");
 
 const completedCommentInput = document.getElementById("input75");
 if (completedCommentInput) {
   completedCommentInput.value = "GN - Business Document";
   completedCommentInput.addEventListener("input", () => {
     completedCommentInput.value = completedCommentInput.value.replace(/[^A-Za-z0-9\s-]/g, "");
+    updateAttributesForCompletedComment();
   });
+  updateAttributesForCompletedComment();
 }
+
+function setEntryTypeForReview() {
+  if (entryTypeText) {
+    if (entryTypeText.tagName === "INPUT") {
+      entryTypeText.value = "Do not make any changes";
+    } else {
+      entryTypeText.textContent = "Do not make any changes";
+    }
+  }
+}
+
+function setAttributesValue(element, value) {
+  if (!element) return;
+  if (element.tagName === "INPUT") {
+    element.value = value;
+  } else {
+    element.textContent = value;
+  }
+}
+
+function setBadgeValue(value) {
+  // Badge function deprecated - badge removed from UI
+}
+
+function updateAttributesForCompletedComment() {
+  if (!attributesText || !completedCommentInput) return;
+  const commentValue = completedCommentInput.value.trim();
+
+  if (!commentValue) {
+    setAttributesValue(attributesText, "None Selected");
+    if (attributesNote) attributesNote.textContent = "Type a comment to see the suggested attribute.";
+    return;
+  }
+
+  if (commentValue.toUpperCase().includes("GN - BUSINESS DOCUMENT")) {
+    setAttributesValue(attributesText, "GN");
+    if (attributesNote) attributesNote.textContent = "Detected GN business document. Attribute set to GN.";
+    return;
+  }
+
+  setAttributesValue(attributesText, "ECOM");
+  if (attributesNote) attributesNote.textContent = "Manual entry detected. Attribute set to ECOM.";
+}
+
+if (attributesText) {
+  setAttributesValue(attributesText, "None Selected");
+}
+if (entryTypeText) {
+  setEntryTypeForReview();
+}
+if (attributesNote) {
+  attributesNote.textContent = "Live review status will appear here.";
+}
+
 
 const allowedEntryPattern = /^[A-Za-z0-9\s-]+$/;
 const numericAlphaInputs = [entryInput, duplicateInput];
@@ -310,6 +369,7 @@ if (latestBtn) {
       preview7501.classList.add("preview");
       preview7501.style.display = "block";
     }
+    updateAttributesForCompletedComment();
     inputs.value = "";
     try {
       await navigator.clipboard.writeText(preview);
@@ -457,6 +517,9 @@ if (Review7501) {
       output.textContent = newSelect;
       output.classList.add("preview");
     }
+    setEntryTypeForReview();
+    if (attributesText) setAttributesValue(attributesText, "Review");
+    if (attributesNote) attributesNote.textContent = "Review selected. Awaiting department and task.";
 
     try {
       await navigator.clipboard.writeText(newSelect);

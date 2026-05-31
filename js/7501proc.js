@@ -71,6 +71,32 @@ function updateAttributesDisplay() {
   attributesText.textContent = value ? value : "None Selected";
 }
 
+function setAttributesNote(note) {
+  const attributesNote = document.getElementById("attributesNote");
+  if (attributesNote) {
+    attributesNote.textContent = note || "";
+  }
+}
+
+function setReviewEntryType() {
+  entryTypeText.textContent = "Do not make any changes";
+}
+
+function determineCompletedAttribute() {
+  const entryNo = entryNoInput.value.trim();
+  const rawValue = entryNo.toUpperCase();
+
+  if (rawValue.includes("GN - BUSINESS DOCUMENT")) {
+    return "GN";
+  }
+
+  if (entryNo) {
+    return "ECOM";
+  }
+
+  return "None Selected";
+}
+
 /**
  * Get current values from top inputs
  */
@@ -142,12 +168,17 @@ attributesSelect.addEventListener("change", updateAttributesDisplay);
 updatePattern();
 updateEntryTypeDisplay();
 updateAttributesDisplay();
+setAttributesNote("");
 
 // ==================== 1. 7501 COMPLETED COMMENT ====================
 
 generate7501CompletedBtn.addEventListener("click", async function() {
   const { entryNo, coo, lines } = getInputValues();
   const comment = joinCommentSegments(entryNo, "Keyed 87/01", coo, lines, "7501Proc");
+  const attribute = determineCompletedAttribute();
+  attributesText.textContent = attribute;
+  setAttributesNote("");
+  updateEntryTypeDisplay();
   await showPreview(preview7501Completed, comment, true);
 });
 
@@ -170,6 +201,9 @@ generateReviewBtn.addEventListener("click", async function() {
   const additionalComment = additionalCommentTA.value.trim() || "[No Additional Comment]";
   
   const comment = `Review - ${reason} - ${subReason} - ${additionalComment} - ${coo} - ${lines} - 7501Proc`;
+  setReviewEntryType();
+  attributesText.textContent = "Review";
+  setAttributesNote("Review");
   await showPreview(previewReview, comment, true);
 });
 
@@ -183,6 +217,8 @@ copyReviewBtn.addEventListener("click", async function() {
 generateShipmentInUseBtn.addEventListener("click", async function() {
   const { entryNo, coo, lines } = getInputValues();
   const comment = joinCommentSegments("Shipment in use", entryNo, coo, lines, "7501Proc");
+  setAttributesNote("");
+  updateEntryTypeDisplay();
   await showPreview(previewShipmentInUse, comment, true);
 });
 
@@ -202,6 +238,8 @@ generateExitBtn.addEventListener("click", async function() {
   const { coo, lines } = getInputValues();
   const exitReason = exitReasonTA.value.trim();
   const comment = joinCommentSegments("Exit", exitReason, coo, lines, "7501Proc");
+  setAttributesNote("");
+  updateEntryTypeDisplay();
   await showPreview(previewExit, comment, true);
 });
 
@@ -223,6 +261,8 @@ generateHSCodeBtn.addEventListener("click", async function() {
   const formattedCode = hscodeInput.value.trim().replace(/\./g, "");
   
   const comment = `HS Code: ${formattedCode}`;
+  setAttributesNote("");
+  updateEntryTypeDisplay();
   await showPreview(previewHSCode, comment, true);
   hscodeInput.value = ""; // Clear input after generation
 });

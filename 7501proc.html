@@ -58,7 +58,7 @@
     <div id="results" class="results"></div>
     <nav class="tabs">
       <a class="tab" href="html/fedex.html">MID Generator</a>
-      <a class="tab" href="html/index.html">Checklist</a>
+      <a class="tab" href="html/indexing.html">Indexing</a>
       <a class="tab" href="index.html">Comment Generator</a>
       <a class="tab orange" href="7501proc.html">7501 PROC</a>
       <a class="tab">Personal Use</a>
@@ -123,6 +123,10 @@
           <h3>7501 Completed Comment</h3>
         </div>
         <div class="card-body">
+          <div class="input-group">
+            <label>Completed Comment</label>
+            <input type="text" id="completedCommentInput" placeholder="e.g., GN - Business Document" />
+          </div>
           <button id="generate7501Completed" class="btn btn-primary">Generate Comment</button>
           <div id="preview7501Completed" class="preview-box"></div>
           <button id="copy7501Completed" class="btn btn-secondary">Copy</button>
@@ -231,7 +235,7 @@
         </div>
         <div class="card-body">
           <div id="patternDisplay" class="pattern-display">
-            EntryNo - Keyed YY/LL - COO - Lines - 7501Proc
+            EntryNo - Keyed YY/LL - COO - Lines - 7501PROC
           </div>
           <p style="font-size: 12px; color: #999; margin-top: 8px; text-align: center;">
             Auto-updated with your inputs

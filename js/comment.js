@@ -362,7 +362,7 @@ if (latestBtn) {
       return;
     }
 
-    const preview = `${commentValue} - Keyed 87/01 - ${coo} - ${lines}`;
+    const preview = `${commentValue} - Keyed 87/01 - ${coo} - ${lines} - 7501PROC`;
     const preview7501 = document.getElementById("preview7501");
     if (preview7501) {
       preview7501.textContent = preview;

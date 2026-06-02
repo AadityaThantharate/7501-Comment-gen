@@ -9,6 +9,7 @@ const entryTypeSelect = document.getElementById("entryType");
 const attributesSelect = document.getElementById("attributes");
 const entryTypeText = document.getElementById("entryTypeText");
 const attributesText = document.getElementById("attributesText");
+const completedCommentInput = document.getElementById("completedCommentInput");
 
 // 7501 Completed
 const generate7501CompletedBtn = document.getElementById("generate7501Completed");
@@ -39,6 +40,7 @@ const hscodeInput = document.getElementById("hscodeInput");
 const generateHSCodeBtn = document.getElementById("generateHSCode");
 const previewHSCode = document.getElementById("previewHSCode");
 const copyHSCodeBtn = document.getElementById("copyHSCode");
+const PROC_TAG = "7501PROC";
 
 // ==================== Utility Functions ====================
 
@@ -83,14 +85,14 @@ function setReviewEntryType() {
 }
 
 function determineCompletedAttribute() {
-  const entryNo = entryNoInput.value.trim();
-  const rawValue = entryNo.toUpperCase();
+  const completedComment = completedCommentInput ? completedCommentInput.value.trim() : entryNoInput.value.trim();
+  const rawValue = completedComment.toUpperCase();
 
   if (rawValue.includes("GN - BUSINESS DOCUMENT")) {
     return "GN";
   }
 
-  if (entryNo) {
+  if (completedComment) {
     return "ECOM";
   }
 
@@ -104,7 +106,8 @@ function getInputValues() {
   return {
     coo: cooInput.value.trim().toUpperCase(),
     lines: linesInput.value.trim(),
-    entryNo: entryNoInput.value.trim()
+    entryNo: entryNoInput.value.trim(),
+    completedComment: completedCommentInput ? completedCommentInput.value.trim() : ""
   };
 }
 
@@ -120,7 +123,7 @@ function joinCommentSegments(...segments) {
  */
 function updatePattern() {
   const { entryNo, coo, lines } = getInputValues();
-  patternDisplay.textContent = joinCommentSegments(entryNo, "Keyed 87/01", coo, lines, "7501Proc");
+  patternDisplay.textContent = joinCommentSegments(entryNo, "Keyed 87/01", coo, lines, PROC_TAG);
 }
 
 /**
@@ -173,10 +176,11 @@ setAttributesNote("");
 // ==================== 1. 7501 COMPLETED COMMENT ====================
 
 generate7501CompletedBtn.addEventListener("click", async function() {
-  const { entryNo, coo, lines } = getInputValues();
-  const comment = joinCommentSegments(entryNo, "Keyed 87/01", coo, lines, "7501Proc");
+  const { entryNo, completedComment, coo, lines } = getInputValues();
+  const entryValue = completedComment || entryNo;
+  const comment = joinCommentSegments(entryValue, "Keyed 87/01", coo, lines, PROC_TAG);
   const attribute = determineCompletedAttribute();
-  attributesText.textContent = attribute;
+  if (attributesText) attributesText.textContent = attribute;
   setAttributesNote("");
   updateEntryTypeDisplay();
   await showPreview(preview7501Completed, comment, true);
@@ -200,7 +204,7 @@ generateReviewBtn.addEventListener("click", async function() {
   const subReason = subReasonSelect.value || "[No Sub Reason]";
   const additionalComment = additionalCommentTA.value.trim() || "[No Additional Comment]";
   
-  const comment = `Review - ${reason} - ${subReason} - ${additionalComment} - ${coo} - ${lines} - 7501Proc`;
+  const comment = `Review - ${reason} - ${subReason} - ${additionalComment} - ${coo} - ${lines} - ${PROC_TAG}`;
   setReviewEntryType();
   attributesText.textContent = "Review";
   setAttributesNote("Review");
@@ -216,7 +220,7 @@ copyReviewBtn.addEventListener("click", async function() {
 
 generateShipmentInUseBtn.addEventListener("click", async function() {
   const { entryNo, coo, lines } = getInputValues();
-  const comment = joinCommentSegments("Shipment in use", entryNo, coo, lines, "7501Proc");
+  const comment = joinCommentSegments("Shipment in use", entryNo, coo, lines, PROC_TAG);
   setAttributesNote("");
   updateEntryTypeDisplay();
   await showPreview(previewShipmentInUse, comment, true);
@@ -237,7 +241,7 @@ generateExitBtn.addEventListener("click", async function() {
   
   const { coo, lines } = getInputValues();
   const exitReason = exitReasonTA.value.trim();
-  const comment = joinCommentSegments("Exit", exitReason, coo, lines, "7501Proc");
+  const comment = joinCommentSegments("Exit", exitReason, coo, lines, PROC_TAG);
   setAttributesNote("");
   updateEntryTypeDisplay();
   await showPreview(previewExit, comment, true);

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Indexing</title>
+    <link rel="stylesheet" href="../css/index.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+
+  <body>
+    <nav class="tabs">
+      <a class="tab" href="fedex.html">MID Generator</a>
+      <a class="tab orange" href="index.html">Indexing</a>
+      <a class="tab" href="../index.html">Comment Generator</a>
+      <a class="tab">PGA Code Guide</a>
+      <a class="tab">USMCA</a>
+      <a class="tab">Personal Use</a>
+    </nav>
+    <!-- <div class="tabs">
+      <div class="tab">Checklist</div>
+      <div class="tab orange"><a href="comment.html">Comment Generator</a></div>
+      <div class="tab">PGA Code Handling Guide</div>
+      <div class="tab">USMCA</div>
+      <div class="tab">Consignee - PWDBW</div>
+      <div class="tab">Personal Use</div>
+      <div class="tab">Manufacturer - PWDBW</div>
+    </div> -->
+
+    <div class="layout">
+      <div>
+        <div class="card">
+          <div class="top">
+            <div class="fields">
+              <div class="field">
+                <label
+                  >Total Value of the Shipment as per Commercial Invoice
+                  (CI)</label
+                >
+                <input
+                  name="total_value_ci"
+                  type="text"
+                  placeholder=""
+                  id="inputCI"
+                />
+              </div>
+
+              <div class="field">
+                <label>Total Value of the Shipment as per Jupiter</label>
+                <input
+                  name="total_value_jupiter"
+                  type="text"
+                  placeholder=""
+                  id="inputTotal"
+                />
+              </div>
+            </div>
+            <div class="filedsContainters">
+              <div class="proceed" id="proceed">Next Step</div>
+              <button id="restAll">Reset</button>
+              <div id="finalStatus"></div>
+            </div>
+          </div>
+
+          <div style="font-size: 13px; color: #556b7a; margin-bottom: 12px">
+            All items are 'Proceed' - Process the Shipment. Any item is 'Send
+            for Review' - Immediately Return shipment to Indexing.
+          </div>
+
+          <div class="checklist" role="list">
+            <!-- rows - replicate from image with names -->
+
+            <div class="row" role="listitem">
+              <div class="label">
+                Is Customer Invoice & Air Way Bill Available?
+              </div>
+              <div class="yn">
+                <select name="invoice_awb_available" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="invoice_awb_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Are there any special instructions in CCP like SBP/CPA, BSO, or
+                Customer's Bond
+              </div>
+              <div class="yn">
+                <select name="special_instructions_ccp" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="special_instructions_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">Country of Origin a Sanctioned Country?</div>
+              <div class="yn">
+                <select name="sanctioned_country" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="sanctioned_country_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Is the shipment PGA controlled as per World Tariff?
+              </div>
+              <div class="yn">
+                <select name="pga_world_tariff" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="pga_world_tariff_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Is the shipment PGA controlled as per Duplex, Application 41?
+              </div>
+              <div class="yn">
+                <select name="pga_duplex_41" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="pga_duplex_41_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Is there Antidumping Duty (AD) or Countervailing Duty (CVD) per
+                Duplex, Application 85?
+              </div>
+              <div class="yn">
+                <select name="add_cvd" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="add_cvd_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Steel or Aluminum License required per Duplex, Application 41?
+              </div>
+              <div class="yn">
+                <select name="steel_al_license" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="steel_al_license_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">Does the shipment contain Diamonds?</div>
+              <div class="yn">
+                <select name="contains_diamonds" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="contains_diamonds_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Does the shipment contain Watches or Watch related parts?
+              </div>
+              <div class="yn">
+                <select name="contains_watches" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="contains_watches_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Does the shipment have different Manufacturer and Shipper for
+                Textile Shipments?
+              </div>
+              <div class="yn">
+                <select name="manufacturer_v_shipper_textile" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="manufacturer_v_shipper_textile_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Is there any indication in CI that the Goods are intended for
+                Personal Use for textile shipments?
+              </div>
+              <div class="yn">
+                <select name="personal_use_textile" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="personal_use_textile_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">Is Importer same as Consignee</div>
+              <div class="yn">
+                <select name="importer_same_consignee" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="importer_same_consignee_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Country of Origin of the Shipment? (as per CI)
+              </div>
+              <div class="yn">
+                <select name="country_of_origin_present" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="country_of_origin_notes"
+                class="note"
+                type="text"
+                placeholder="Country name / Notes"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Is there a USMCA Document available in GSDR-Docs? (for CA, MX &
+                US)
+              </div>
+              <div class="yn">
+                <select name="usmca_document" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="usmca_document_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Is the Unit of Measure (UOM) in square meters?
+              </div>
+              <div class="yn">
+                <select name="uom_square_meters" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="uom_square_meters_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+
+            <div class="row">
+              <div class="label">
+                Does the shipment require multiple different HTS codes or
+                multiple lines to be submitted?
+              </div>
+              <div class="yn">
+                <select name="multiple_hts" class="yn-select">
+                  <option value="">-- Select --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <input
+                name="multiple_hts_notes"
+                class="note"
+                type="text"
+                placeholder="Notes / Action"
+              />
+            </div>
+          </div>
+          <!-- end indexing -->
+        </div>
+
+        <!-- bottom tabs -->
+      </div>
+
+      <!-- RIGHT: sidebar with blue links -->
+      <aside class="sidebar">
+        <div class="card">
+          <div style="font-weight: 700; margin-bottom: 8px">Quick Links</div>
+          <div class="links">
+            <a href="#">What is NDC/ MMV</a>
+            <a href="#">Currency Convertor</a>
+            <a href="#">ADD/ CVD Weblink</a>
+            <a href="#">How to check Manufacturer PBW</a>
+            <a href="#">Personal Use Instructions</a>
+            <a href="#">How to check Consignee PBW</a>
+            <a href="#">USMCA Steps</a>
+            <a href="#">Sample</a>
+            <a href="#">Sanctioned Country List</a>
+            <a href="#">PGA &amp; FDA List</a>
+            <a href="#">PGA Code Guide</a>
+            <a href="#">Shipment Disposal</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-weight: 700; margin-bottom: 8px">Notes</div>
+          <div style="font-size: 13px; color: #33546a">
+            Use this indexing checklist to validate documents before processing. If any
+            item is marked 'No' send for review.
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      lucide.createIcons(); // ✅ Render all icons
+    </script>
+    <script src="../js/index.js"></script>
+  </body>
+</html>

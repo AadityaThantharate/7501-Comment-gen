@@ -155,6 +155,9 @@ exitBtn.addEventListener("click", async function () {
 //////////// Commeting section ./////////////////
 
 const commentSeven = document.getElementById("commentSeven");
+const preview7501Error = document.getElementById("preview7501Error");
+const cooInput = document.getElementById("coo");
+const linesInput = document.getElementById("lines");
 const indexComplete = document.getElementById("indexComplete");
 
 // Indexing Completed shipements //////////
@@ -336,12 +339,29 @@ if (attributesNote) {
 
 
 const allowedEntryPattern = /^[A-Za-z0-9\s-]+$/;
+
+function set7501Error(message) {
+  if (!preview7501Error) return;
+  preview7501Error.textContent = message;
+  preview7501Error.style.display = message ? "block" : "none";
+}
+
+function clear7501Error() {
+  set7501Error("");
+}
+
 const numericAlphaInputs = [entryInput, duplicateInput];
 numericAlphaInputs.forEach((element) => {
   if (element) {
     element.addEventListener("input", () => {
       element.value = element.value.replace(/[^A-Za-z0-9\s-]/g, "");
     });
+  }
+});
+
+[completedCommentInput, cooInput, linesInput].forEach((element) => {
+  if (element) {
+    element.addEventListener("input", clear7501Error);
   }
 });
 
@@ -354,14 +374,15 @@ if (latestBtn) {
     const allowedPattern = /^[A-Za-z0-9\s-]+$/;
 
     if (!commentValue || !coo || !lines) {
-      alert("7501 comment, COO, and Lines are required");
+      set7501Error("7501 comment, COO, and Lines are required.");
       return;
     }
     if (!allowedPattern.test(commentValue)) {
-      alert("Please use only letters, numbers, spaces, and hyphens in the 7501 comment.");
+      set7501Error("Please use only letters, numbers, spaces, and hyphens in the 7501 comment.");
       return;
     }
 
+    clear7501Error();
     const preview = `${commentValue} - Keyed 87/01 - ${coo} - ${lines} - 7501PROC`;
     const preview7501 = document.getElementById("preview7501");
     if (preview7501) {

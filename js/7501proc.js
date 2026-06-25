@@ -61,16 +61,20 @@ function showPopup(message) {
  * Update Entry Type display
  */
 function updateEntryTypeDisplay() {
-  const value = entryTypeSelect.value;
-  entryTypeText.textContent = value ? value : "None Selected";
+  const value = entryTypeSelect ? entryTypeSelect.value : "";
+  if (entryTypeText) {
+    entryTypeText.textContent = value ? value : "None Selected";
+  }
 }
 
 /**
  * Update Attributes display
  */
 function updateAttributesDisplay() {
-  const value = attributesSelect.value;
-  attributesText.textContent = value ? value : "None Selected";
+  const value = attributesSelect ? attributesSelect.value : "";
+  if (attributesText) {
+    attributesText.textContent = value ? value : "None Selected";
+  }
 }
 
 function setAttributesNote(note) {
@@ -80,12 +84,74 @@ function setAttributesNote(note) {
   }
 }
 
-function setReviewEntryType() {
+function setCompletedCommentAttributeState() {
+  const completedComment = completedCommentInput ? completedCommentInput.value.trim() : "";
+  const isGNComment = completedComment.toUpperCase().includes("GN - BUSINESS DOCUMENT");
+
+  if (!isGNComment) {
+    if (attributesText) {
+      attributesText.textContent = "Don't Select Any Attribute";
+    }
+    if (attributesSelect) {
+      attributesSelect.innerHTML = "";
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Don't Select Any Attribute";
+      attributesSelect.appendChild(placeholder);
+      const ecomOption = document.createElement("option");
+      ecomOption.value = "ECOM";
+      ecomOption.textContent = "ECOM";
+      attributesSelect.appendChild(ecomOption);
+      attributesSelect.value = "";
+    }
+    return;
+  }
+
   if (entryTypeSelect) {
-    entryTypeSelect.value = "UNASSIGNED";
+    entryTypeSelect.value = "GN";
   }
   if (entryTypeText) {
-    entryTypeText.textContent = "UNASSIGNED";
+    entryTypeText.textContent = "GN";
+  }
+
+  if (attributesText) {
+    attributesText.textContent = "ECOM";
+  }
+  if (attributesSelect) {
+    attributesSelect.innerHTML = "";
+    const ecomOption = document.createElement("option");
+    ecomOption.value = "ECOM";
+    ecomOption.textContent = "ECOM";
+    attributesSelect.appendChild(ecomOption);
+    attributesSelect.value = "ECOM";
+  }
+}
+
+function syncVisibleEntryType() {
+  if (!entryTypeSelect || !entryTypeText) return;
+  const value = entryTypeSelect.value;
+  entryTypeText.textContent = value ? value : "None Selected";
+}
+
+function handleAttributesSelection() {
+  if (!attributesSelect) return;
+
+  if (attributesSelect.value === "Watches") {
+    if (entryTypeSelect) {
+      entryTypeSelect.value = "UNASSIGNED";
+    }
+    if (entryTypeText) {
+      entryTypeText.textContent = "UNASSIGNED";
+    }
+  }
+}
+
+function setReviewEntryType() {
+  if (entryTypeText) {
+    entryTypeText.textContent = "Do not make any changes";
+  }
+  if (entryTypeSelect) {
+    entryTypeSelect.value = "";
   }
 }
 
@@ -171,14 +237,14 @@ function determineCompletedAttribute() {
   const rawValue = completedComment.toUpperCase();
 
   if (rawValue.includes("GN - BUSINESS DOCUMENT")) {
-    return "GN";
+    return "ECOM";
   }
 
   if (completedComment) {
     return "ECOM";
   }
 
-  return "None Selected";
+  return "Don't Select Any Attribute";
 }
 
 /**
@@ -246,8 +312,14 @@ async function copyToClipboard(text, buttonElement) {
 cooInput.addEventListener("input", updatePattern);
 linesInput.addEventListener("input", updatePattern);
 entryNoInput.addEventListener("input", updatePattern);
-entryTypeSelect.addEventListener("change", updateEntryTypeDisplay);
-attributesSelect.addEventListener("change", updateAttributesDisplay);
+entryTypeSelect.addEventListener("change", () => {
+  updateEntryTypeDisplay();
+  syncVisibleEntryType();
+});
+attributesSelect.addEventListener("change", () => {
+  updateAttributesDisplay();
+  handleAttributesSelection();
+});
 if (reasonForReviewSelect) {
   reasonForReviewSelect.addEventListener("change", () => {
     updateReviewSubReasonState();
@@ -265,11 +337,17 @@ if (reasonForReviewSelect) {
 // Call once on load
 updatePattern();
 updateEntryTypeDisplay();
+syncVisibleEntryType();
 updateAttributesDisplay();
+setCompletedCommentAttributeState();
 setAttributesNote("");
 updateReviewSubReasonState();
 
 // ==================== 1. 7501 COMPLETED COMMENT ====================
+
+completedCommentInput.addEventListener("input", () => {
+  setCompletedCommentAttributeState();
+});
 
 generate7501CompletedBtn.addEventListener("click", async function() {
   const { entryNo, completedComment, coo, lines } = getInputValues();

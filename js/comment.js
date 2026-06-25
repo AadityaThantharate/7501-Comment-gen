@@ -264,18 +264,22 @@ if (completedCommentInput) {
   updateAttributesForCompletedComment();
 }
 
-function setEntryTypeForReview() {
-  if (entryTypeText) {
-    if (entryTypeText.tagName === "INPUT") {
-      entryTypeText.value = "UNASSIGNED";
-    } else {
-      entryTypeText.textContent = "UNASSIGNED";
-    }
+function setEntryTypeValue(value) {
+  if (!entryTypeText) return;
+  if (entryTypeText.tagName === "INPUT") {
+    entryTypeText.value = value;
+  } else {
+    entryTypeText.textContent = value;
   }
+}
+
+function setEntryTypeForReview() {
+  setEntryTypeValue("Do not make any changes");
 }
 
 function setReviewAttributesForReview(reason) {
   if (reason === "Watches") {
+    setEntryTypeValue("UNASSIGNED");
     if (attributesText) {
       setAttributesValue(attributesText, "High Risk, Watches");
     }
@@ -285,6 +289,7 @@ function setReviewAttributesForReview(reason) {
     return;
   }
 
+  setEntryTypeForReview();
   if (attributesText) {
     setAttributesValue(attributesText, "Review");
   }
@@ -312,17 +317,20 @@ function updateAttributesForCompletedComment() {
 
   if (!commentValue) {
     setAttributesValue(attributesText, "None Selected");
+    setEntryTypeForReview();
     if (attributesNote) attributesNote.textContent = "Type a comment to see the suggested attribute.";
     return;
   }
 
   if (commentValue.toUpperCase().includes("GN - BUSINESS DOCUMENT")) {
-    setAttributesValue(attributesText, "GN");
-    if (attributesNote) attributesNote.textContent = "Detected GN business document. Attribute set to GN.";
+    setAttributesValue(attributesText, "Don't select any attribute");
+    setEntryTypeValue("GN");
+    if (attributesNote) attributesNote.textContent = "GN completed comment detected. No attribute selected.";
     return;
   }
 
   setAttributesValue(attributesText, "ECOM");
+  setEntryTypeForReview();
   if (attributesNote) attributesNote.textContent = "Manual entry detected. Attribute set to ECOM.";
 }
 

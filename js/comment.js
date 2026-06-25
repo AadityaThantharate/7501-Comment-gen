@@ -80,18 +80,10 @@ decrementBtn.addEventListener("click", () => {
 procComment.addEventListener("click", function () {
   const previewHold = document.getElementById("previewHold");
   const entry = entryInput.value.trim();
+  const safeEntry = entry || "[No Entry Number]";
 
-  if (!entry) {
-    alert("Enter a shipment number for Shipment In Use.");
-    return;
-  }
-  if (!allowedEntryPattern.test(entry)) {
-    alert("Shipment In Use may only contain letters, numbers, spaces, and hyphens.");
-    return;
-  }
-
-  const preview = `Shipment in use - ${entry} - 7501PROC`;
-  navigator.clipboard.writeText(`${entry} - Shipment is on hold`);
+  const preview = `Shipment in use - ${safeEntry} - 7501PROC`;
+  navigator.clipboard.writeText(`${safeEntry} - Shipment is on hold`);
   previewHold.textContent = preview;
   previewHold.classList.add("preview");
 });
@@ -100,17 +92,9 @@ if (duplicateBtn && duplicateInput) {
   duplicateBtn.addEventListener("click", async function () {
     const duplicatePreview = document.getElementById("duplicatePreview");
     const entry = duplicateInput.value.trim();
+    const safeEntry = entry || "[No Entry Number]";
 
-    if (!entry) {
-      alert("Enter an entry number for Duplicate (Already).");
-      return;
-    }
-    if (!allowedEntryPattern.test(entry)) {
-      alert("Duplicate entry may only contain letters, numbers, spaces, and hyphens.");
-      return;
-    }
-
-    const commentText = `Duplicate - Already processed, Entry Number ${entry} - 7501Proc`;
+    const commentText = `Duplicate - Already processed, Entry Number ${safeEntry} - 7501Proc`;
     duplicatePreview.textContent = commentText;
     duplicatePreview.classList.add("preview");
     try {
@@ -134,11 +118,7 @@ const exitInput = document.getElementById("inputExit");
 const exitBtn = document.getElementById("exitBtn");
 
 exitBtn.addEventListener("click", async function () {
-  if (entryInput.value === " ") {
-    alert("Please Add Reason for Exit");
-    return;
-  }
-  const input = exitInput.value.trim();
+  const input = exitInput.value.trim() || "[No Exit Reason]";
   const inputText = `Exit - ${input} - 7501 PROC`;
   const preview = document.getElementById("exitsPreview");
   preview.textContent = inputText;
@@ -287,10 +267,29 @@ if (completedCommentInput) {
 function setEntryTypeForReview() {
   if (entryTypeText) {
     if (entryTypeText.tagName === "INPUT") {
-      entryTypeText.value = "Do not make any changes";
+      entryTypeText.value = "UNASSIGNED";
     } else {
-      entryTypeText.textContent = "Do not make any changes";
+      entryTypeText.textContent = "UNASSIGNED";
     }
+  }
+}
+
+function setReviewAttributesForReview(reason) {
+  if (reason === "Watches") {
+    if (attributesText) {
+      setAttributesValue(attributesText, "High Risk, Watches");
+    }
+    if (attributesNote) {
+      attributesNote.textContent = "High Risk and Watches selected. Release Only: Unticked";
+    }
+    return;
+  }
+
+  if (attributesText) {
+    setAttributesValue(attributesText, "Review");
+  }
+  if (attributesNote) {
+    attributesNote.textContent = "Review selected. Release Only: Unticked";
   }
 }
 
@@ -509,6 +508,25 @@ if (indexReview) {
 ////////////////////////////////7501 Review Block///////////////////////////
 const Review7501 = document.getElementById("review7501");
 
+function setReviewError(message) {
+  const reviewError = document.getElementById("reviewErrorMessage") || document.getElementById("preview7501Error");
+  if (!reviewError) return;
+  reviewError.textContent = message;
+  reviewError.style.display = message ? "block" : "none";
+}
+
+function clearReviewError() {
+  setReviewError("");
+}
+
+["dept", "task", "add-comment", "coo", "lines"].forEach((id) => {
+  const element = document.getElementById(id);
+  if (element) {
+    element.addEventListener("input", clearReviewError);
+    element.addEventListener("change", clearReviewError);
+  }
+});
+
 if (Review7501) {
   Review7501.addEventListener("click", async () => {
     const dept = document.getElementById("dept");
@@ -516,31 +534,51 @@ if (Review7501) {
     const inputComment = document.getElementById("add-comment");
 
     const selectedDept = dept?.value || "";
-    const selectedTask = task?.value || "";
-    const additionalComment = inputComment?.value.trim() || "";
+    const additionalComment = inputComment?.value.trim();
+    const cooValue = (document.getElementById("coo") || {}).value?.trim().toUpperCase() || "";
+    const linesValue = (document.getElementById("lines") || {}).value?.trim() || "";
 
     if (!selectedDept) {
-      alert("Please select a department for 7501 Review Comment.");
-      return;
-    }
-    if (!selectedTask) {
-      alert("Please select a task for 7501 Review Comment.");
+      setReviewError("Please select a department for 7501 Review Comment.");
       return;
     }
 
-    const commentParts = ["Review", selectedDept, selectedTask];
-    if (additionalComment) commentParts.push(additionalComment);
+    if (!cooValue || !linesValue) {
+      setReviewError("Please enter both COO and line before generating a review comment.");
+      return;
+    }
+
+    const isAutoTaskReason = ["Reason not listed", "Watches"].includes(selectedDept);
+    const selectedTask = isAutoTaskReason
+      ? (selectedDept === "Watches" ? "Shipment Contains Watch" : "")
+      : (task?.value || "");
+
+    if (!isAutoTaskReason && !selectedTask) {
+      setReviewError("Please select a task for 7501 Review Comment.");
+      return;
+    }
+
+    const commentParts = ["Review", selectedDept, selectedTask || ""];
+    if (additionalComment || cooValue || linesValue) {
+      commentParts.push(additionalComment || "");
+    }
+    if (cooValue) {
+      commentParts.push(cooValue);
+    }
+    if (linesValue) {
+      commentParts.push(linesValue);
+    }
     commentParts.push("7501PROC");
 
     const newSelect = commentParts.join(" - ");
+    clearReviewError();
     const output = document.getElementById("output");
     if (output) {
       output.textContent = newSelect;
       output.classList.add("preview");
     }
     setEntryTypeForReview();
-    if (attributesText) setAttributesValue(attributesText, "Review");
-    if (attributesNote) attributesNote.textContent = "Review selected. Awaiting department and task.";
+    setReviewAttributesForReview(selectedDept);
 
     try {
       await navigator.clipboard.writeText(newSelect);
@@ -708,7 +746,7 @@ const departmentTasks = {
   ],
 
   "Reason not listed": [
-    "No sub reason"
+    "No Sub Reason"
   ]
 };
 
@@ -739,6 +777,13 @@ function populateReviewTasks() {
     option.textContent = opn;
     task.appendChild(option);
   });
+
+  const isAutoTaskReason = ["Reason not listed", "Watches"].includes(deptSelect);
+  task.disabled = isAutoTaskReason;
+  if (isAutoTaskReason) {
+    task.value = deptSelect === "Watches" ? "Shipment Contains Watch" : "";
+  }
+
   if (debug) debug.textContent = "";
 }
 
@@ -1033,7 +1078,10 @@ const conversionFactors = {
   }
 };
 
-function setUnitOptions(category, unitSelect) {
+function setUnitOptions(category, unitSelect, otherUnitSelect) {
+  const currentValue = unitSelect.value;
+  const otherValue = otherUnitSelect ? otherUnitSelect.value : "";
+
   unitSelect.innerHTML = "";
   const placeholder = document.createElement("option");
   placeholder.value = "";
@@ -1044,12 +1092,25 @@ function setUnitOptions(category, unitSelect) {
     return;
   }
 
-  categoryUnits[category].forEach(unit => {
+  categoryUnits[category].forEach((unit) => {
+    if (unit.value === otherValue && unit.value !== currentValue) {
+      return;
+    }
+
     const option = document.createElement("option");
     option.value = unit.value;
     option.textContent = unit.label;
+
+    if (unit.value === currentValue) {
+      option.selected = true;
+    }
+
     unitSelect.appendChild(option);
   });
+
+  if (currentValue && !Array.from(unitSelect.options).some((option) => option.value === currentValue)) {
+    unitSelect.value = "";
+  }
 }
 
 function formatNumber(value) {
@@ -1139,10 +1200,28 @@ function initializeUnitConversion() {
 
   previewUnit.style.display = "none";
 
-  categorySelect.addEventListener("change", function () {
-    setUnitOptions(categorySelect.value, fromUnitSelect);
-    setUnitOptions(categorySelect.value, toUnitSelect);
+  const refreshUnitOptions = () => {
+    setUnitOptions(categorySelect.value, fromUnitSelect, toUnitSelect);
+    setUnitOptions(categorySelect.value, toUnitSelect, fromUnitSelect);
     previewUnit.innerHTML = "";
+  };
+
+  categorySelect.addEventListener("change", refreshUnitOptions);
+
+  fromUnitSelect.addEventListener("change", function () {
+    if (toUnitSelect.value === fromUnitSelect.value) {
+      toUnitSelect.value = "";
+    }
+    setUnitOptions(categorySelect.value, fromUnitSelect, toUnitSelect);
+    setUnitOptions(categorySelect.value, toUnitSelect, fromUnitSelect);
+  });
+
+  toUnitSelect.addEventListener("change", function () {
+    if (fromUnitSelect.value === toUnitSelect.value) {
+      fromUnitSelect.value = "";
+    }
+    setUnitOptions(categorySelect.value, fromUnitSelect, toUnitSelect);
+    setUnitOptions(categorySelect.value, toUnitSelect, fromUnitSelect);
   });
 
   convertBtn.addEventListener("click", function () {

@@ -70,11 +70,11 @@
     <div class="input-row">
       <div class="input-group">
         <label>Country of Origin</label>
-        <input type="text" id="coo" placeholder="e.g., TR" maxlength="2" />
+        <input type="text" id="coo" placeholder="e.g., TR" maxlength="2" required />
       </div>
       <div class="input-group">
         <label># of Lines</label>
-        <input type="text" id="lines" placeholder="e.g., 01" maxlength="3" />
+        <input type="text" id="lines" placeholder="e.g., 01" maxlength="3" required />
       </div>
       <div class="input-group">
         <label>Entry Number</label>
@@ -151,6 +151,8 @@
               <option value="Parties">Parties</option>
               <option value="Value">Value</option>
               <option value="Quantity">Quantity</option>
+              <option value="Reason not listed">Reason not listed</option>
+              <option value="Watches">Watches</option>
             </select>
           </div>
 
@@ -158,6 +160,8 @@
             <label>Sub Reason</label>
             <select id="subReason">
               <option value="">Select Sub Reason</option>
+              <option value="No Sub Reason">No Sub Reason</option>
+              <option value="Shipment Contains Watch">Shipment Contains Watch</option>
               <option value="Better description required">Better description required</option>
               <option value="Invoice is not clear">Invoice is not clear</option>
               <option value="Manufacturer details required">Manufacturer details required</option>
@@ -171,6 +175,7 @@
           </div>
 
           <button id="generateReview" class="btn btn-primary">Generate Comment</button>
+          <div id="reviewErrorMessage" class="error-message" style="color: #c00; font-size: 12px; margin-top: 6px; display: none;"></div>
           <div id="previewReview" class="preview-box"></div>
           <button id="copyReview" class="btn btn-secondary">Copy</button>
         </div>

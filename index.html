@@ -71,12 +71,12 @@
       <div class="container">
   <div class="row">
     <label>Country of Origin (COO): </label>
-    <input type="text" id="coo" onkeydown="checkKey(event)">
+    <input type="text" id="coo" onkeydown="checkKey(event)" required>
   </div>
 
   <div class="row">
     <label># Lines </label>
-    <input type="text" id="lines" onkeydown="checkKey(event)">
+    <input type="text" id="lines" onkeydown="checkKey(event)" required>
   </div>
 </div>
       <div>
@@ -116,6 +116,7 @@
 
         <input type="text" placeholder="Additional Comment" id="add-comment"/>
         <button id="review7501">Copy Items</button>
+        <div id="reviewErrorMessage" class="error-message" style="color: #c00; font-size: 12px; margin-top: 6px; display: none;"></div>
         <pre id="debug"></pre>
         <div id="output"></div>
       </div>
@@ -171,7 +172,7 @@
       <div>
         <h3><i data-lucide="database"></i>Shipment In Use</h3>
         <input id="entry-input" type="text" inputmode="text" pattern="[A-Za-z0-9\s-]*" placeholder="Enter shipment entry..." />
-        <button id="proc-comment">Shipment InUse</button>
+        <button id="proc-comment">Shipment In Use</button>
         <div id="previewHold"></div>
       </div>
       <div>

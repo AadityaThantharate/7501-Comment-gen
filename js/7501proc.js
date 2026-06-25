@@ -81,7 +81,89 @@ function setAttributesNote(note) {
 }
 
 function setReviewEntryType() {
-  entryTypeText.textContent = "Do not make any changes";
+  if (entryTypeSelect) {
+    entryTypeSelect.value = "UNASSIGNED";
+  }
+  if (entryTypeText) {
+    entryTypeText.textContent = "UNASSIGNED";
+  }
+}
+
+function setReviewAttributesDisplay(reason) {
+  if (reason === "Watches") {
+    if (attributesText) {
+      attributesText.textContent = "High Risk, Watches";
+    }
+    if (attributesSelect) {
+      attributesSelect.value = "High Risk";
+    }
+    setAttributesNote("High Risk and Watches selected. Release Only: Unticked");
+    return;
+  }
+
+  if (attributesText) {
+    attributesText.textContent = "Review";
+  }
+  if (attributesSelect) {
+    attributesSelect.value = "";
+  }
+  setAttributesNote("Review selected. Release Only: Unticked");
+}
+
+function setReviewError(message) {
+  const reviewError = document.getElementById("reviewErrorMessage");
+  if (!reviewError) return;
+  reviewError.textContent = message;
+  reviewError.style.display = message ? "block" : "none";
+}
+
+function clearReviewError() {
+  setReviewError("");
+}
+
+function getReviewSubReason(reason) {
+  if (reason === "Watches") {
+    return "Shipment Contains Watch";
+  }
+
+  if (reason === "Reason not listed") {
+    return "";
+  }
+
+  return subReasonSelect && subReasonSelect.value ? subReasonSelect.value : "";
+}
+
+function buildReviewComment(reason, subReason, additionalComment, coo, lines) {
+  const parts = ["Review", reason, subReason ?? ""];
+
+  if (additionalComment || coo || lines) {
+    parts.push(additionalComment || "");
+  }
+
+  if (coo) {
+    parts.push(coo);
+  }
+
+  if (lines) {
+    parts.push(lines);
+  }
+
+  parts.push(PROC_TAG);
+  return parts.join(" - ");
+}
+
+function updateReviewSubReasonState() {
+  if (!subReasonSelect) return;
+
+  const reason = reasonForReviewSelect ? reasonForReviewSelect.value : "";
+  const isAutoReason = reason === "Reason not listed" || reason === "Watches";
+
+  subReasonSelect.disabled = isAutoReason;
+  if (isAutoReason) {
+    subReasonSelect.value = reason === "Watches" ? "Shipment Contains Watch" : "";
+  } else {
+    subReasonSelect.value = subReasonSelect.value || "";
+  }
 }
 
 function determineCompletedAttribute() {
@@ -166,12 +248,26 @@ linesInput.addEventListener("input", updatePattern);
 entryNoInput.addEventListener("input", updatePattern);
 entryTypeSelect.addEventListener("change", updateEntryTypeDisplay);
 attributesSelect.addEventListener("change", updateAttributesDisplay);
+if (reasonForReviewSelect) {
+  reasonForReviewSelect.addEventListener("change", () => {
+    updateReviewSubReasonState();
+    clearReviewError();
+  });
+}
+
+[cooInput, linesInput, subReasonSelect, additionalCommentTA].forEach((element) => {
+  if (element) {
+    element.addEventListener("input", clearReviewError);
+    element.addEventListener("change", clearReviewError);
+  }
+});
 
 // Call once on load
 updatePattern();
 updateEntryTypeDisplay();
 updateAttributesDisplay();
 setAttributesNote("");
+updateReviewSubReasonState();
 
 // ==================== 1. 7501 COMPLETED COMMENT ====================
 
@@ -195,19 +291,24 @@ copy7501CompletedBtn.addEventListener("click", async function() {
 
 generateReviewBtn.addEventListener("click", async function() {
   if (!reasonForReviewSelect.value) {
-    alert("Please select a Reason for Review");
+    setReviewError("Please select a reason for review.");
     return;
   }
-  
+
   const { coo, lines } = getInputValues();
+  if (!coo || !lines) {
+    setReviewError("Please enter both COO and line before generating a review comment.");
+    return;
+  }
+
   const reason = reasonForReviewSelect.value;
-  const subReason = subReasonSelect.value || "[No Sub Reason]";
-  const additionalComment = additionalCommentTA.value.trim() || "[No Additional Comment]";
+  const subReason = getReviewSubReason(reason);
+  const additionalComment = additionalCommentTA.value.trim();
   
-  const comment = `Review - ${reason} - ${subReason} - ${additionalComment} - ${coo} - ${lines} - ${PROC_TAG}`;
+  const comment = buildReviewComment(reason, subReason, additionalComment, coo, lines);
   setReviewEntryType();
-  attributesText.textContent = "Review";
-  setAttributesNote("Review");
+  setReviewAttributesDisplay(reason);
+  clearReviewError();
   await showPreview(previewReview, comment, true);
 });
 
@@ -220,7 +321,10 @@ copyReviewBtn.addEventListener("click", async function() {
 
 generateShipmentInUseBtn.addEventListener("click", async function() {
   const { entryNo, coo, lines } = getInputValues();
-  const comment = joinCommentSegments("Shipment in use", entryNo, coo, lines, PROC_TAG);
+  const normalizedEntryNo = entryNo || "[No Entry Number]";
+  const normalizedCoo = coo || "[No COO]";
+  const normalizedLines = lines || "[No Lines]";
+  const comment = joinCommentSegments("Shipment in use", normalizedEntryNo, normalizedCoo, normalizedLines, PROC_TAG);
   setAttributesNote("");
   updateEntryTypeDisplay();
   await showPreview(previewShipmentInUse, comment, true);
@@ -234,14 +338,11 @@ copyShipmentInUseBtn.addEventListener("click", async function() {
 // ==================== 4. EXIT SHIPMENT ====================
 
 generateExitBtn.addEventListener("click", async function() {
-  if (!exitReasonTA.value.trim()) {
-    alert("Please enter an Exit Reason");
-    return;
-  }
-  
   const { coo, lines } = getInputValues();
-  const exitReason = exitReasonTA.value.trim();
-  const comment = joinCommentSegments("Exit", exitReason, coo, lines, PROC_TAG);
+  const exitReason = exitReasonTA.value.trim() || "[No Exit Reason]";
+  const normalizedCoo = coo || "[No COO]";
+  const normalizedLines = lines || "[No Lines]";
+  const comment = joinCommentSegments("Exit", exitReason, normalizedCoo, normalizedLines, PROC_TAG);
   setAttributesNote("");
   updateEntryTypeDisplay();
   await showPreview(previewExit, comment, true);

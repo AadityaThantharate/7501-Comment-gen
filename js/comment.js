@@ -15,6 +15,54 @@ const duplicateErrorMessage = document.getElementById("duplicateErrorMessage");
 const editBtn = document.getElementById("edit");
 const editInput = document.getElementById("editInput");
 
+const holdCommentType = document.getElementById("holdCommentType");
+const holdAdditionalComment = document.getElementById("holdAdditionalComment");
+const holdCommentError = document.getElementById("holdCommentError");
+
+function checkKey(event) {
+  if (!event) return;
+  if (event.key === "Enter") {
+    event.preventDefault();
+  }
+}
+
+function normalizeCoo(value) {
+  return String(value || "").trim().toUpperCase();
+}
+
+function setInlineFieldError(elementId, message) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+  element.textContent = message;
+  element.style.display = message ? "block" : "none";
+}
+
+function clearInlineFieldError(elementId) {
+  setInlineFieldError(elementId, "");
+}
+
+function ensureValidCooAndLines() {
+  const cooValue = normalizeCoo(document.getElementById("coo")?.value || "");
+  const linesValue = document.getElementById("lines")?.value?.trim() || "";
+  let isValid = true;
+
+  if (!cooValue) {
+    setInlineFieldError("cooError", "Please enter COO");
+    isValid = false;
+  } else {
+    clearInlineFieldError("cooError");
+  }
+
+  if (!linesValue || Number(linesValue) <= 0 || !/^\d+$/.test(linesValue)) {
+    setInlineFieldError("linesError", "Please enter Number of Lines");
+    isValid = false;
+  } else {
+    clearInlineFieldError("linesError");
+  }
+
+  return isValid;
+}
+
 function showFieldError(element, message) {
   if (!element) return;
   element.textContent = message;
@@ -95,46 +143,106 @@ decrementBtn.addEventListener("click", () => {
   counterDisplay.textContent = `Copied: ${val} times`;
 });
 
-procComment.addEventListener("click", function () {
-  const previewHold = document.getElementById("previewHold");
-  const entry = entryInput.value.trim();
+procComment.addEventListener("click", async function () {
+  const previewHold = document.getElementById("previewHold") || shipmentInUseError;
+  const cooValue = normalizeCoo(document.getElementById("coo")?.value || "");
+  const linesValue = document.getElementById("lines")?.value?.trim() || "";
+  const selectedHoldType = holdCommentType?.value || "";
+  const additionalHoldComment = holdAdditionalComment?.value.trim() || "";
 
-  if (!isValidEntryNumber(entry)) {
-    showFieldError(shipmentInUseError, "Entry Number is required.");
+  if (!cooValue) {
+    setInlineFieldError("cooError", "Please enter COO");
+    showFieldError(shipmentInUseError, "COO is required.");
     if (previewHold) {
       previewHold.textContent = "";
+      previewHold.style.display = "none";
+      previewHold.classList.remove("preview");
+    }
+    return;
+  }
+
+  if (!linesValue || Number(linesValue) <= 0 || !/^\d+$/.test(linesValue)) {
+    setInlineFieldError("linesError", "Please enter Number of Lines");
+    showFieldError(shipmentInUseError, "Number of Lines is required.");
+    if (previewHold) {
+      previewHold.textContent = "";
+      previewHold.style.display = "none";
+      previewHold.classList.remove("preview");
+    }
+    return;
+  }
+
+  if (!selectedHoldType) {
+    setInlineFieldError("holdCommentError", "Please select a hold comment.");
+    showFieldError(shipmentInUseError, "Please select a hold comment.");
+    if (previewHold) {
+      previewHold.textContent = "";
+      previewHold.style.display = "none";
       previewHold.classList.remove("preview");
     }
     return;
   }
 
   clearFieldError(shipmentInUseError);
-  const safeEntry = entry;
-  const preview = `Shipment in use - ${safeEntry} - 7501PROC`;
-  navigator.clipboard.writeText(`${safeEntry} - Shipment is on hold`);
-  previewHold.textContent = preview;
-  previewHold.classList.add("preview");
+  clearInlineFieldError("holdCommentError");
+  clearInlineFieldError("cooError");
+  clearInlineFieldError("linesError");
+
+  const commentParts = ["Review", "HOLD", selectedHoldType];
+  if (additionalHoldComment) {
+    commentParts.push(additionalHoldComment);
+  }
+  commentParts.push(cooValue, linesValue, "7501Proc");
+  const preview = commentParts.join(" - ");
+  if (previewHold) {
+    previewHold.textContent = preview;
+    previewHold.classList.add("preview");
+    previewHold.style.display = "block";
+  }
+  try {
+    await navigator.clipboard.writeText(preview);
+  } catch (err) {
+    console.error("Failed to copy hold comment:", err);
+  }
 });
+
+
+function generateDuplicateComment() {
+  const duplicatePreview = document.getElementById("duplicatePreview");
+  const entry = (duplicateInput && duplicateInput.value || "").trim();
+
+  if (!isValidEntryNumber(entry)) {
+    showFieldError(duplicateErrorMessage, "Entry Number is required.");
+    if (duplicatePreview) {
+      duplicatePreview.textContent = "";
+      duplicatePreview.classList.remove("preview");
+    }
+    return;
+  }
+
+  clearFieldError(duplicateErrorMessage);
+  const commentText = `Duplicate - Already processed, Entry Number ${entry} - 7501Proc`;
+  if (duplicatePreview) {
+    duplicatePreview.textContent = commentText;
+    duplicatePreview.classList.add("preview");
+  }
+
+  if (attributesText) {
+    setAttributesValue(attributesText, "ECOM");
+  }
+  if (attributesNote) {
+    attributesNote.textContent = "ECOM selected. Entry Type and Release Only unchanged.";
+  }
+  setEntryTypeForReview();
+
+  return commentText;
+}
 
 if (duplicateBtn && duplicateInput) {
   duplicateBtn.addEventListener("click", async function () {
-    const duplicatePreview = document.getElementById("duplicatePreview");
-    const entry = duplicateInput.value.trim();
+    const commentText = generateDuplicateComment();
+    if (!commentText) return;
 
-    if (!isValidEntryNumber(entry)) {
-      showFieldError(duplicateErrorMessage, "Entry Number is required.");
-      if (duplicatePreview) {
-        duplicatePreview.textContent = "";
-        duplicatePreview.classList.remove("preview");
-      }
-      return;
-    }
-
-    clearFieldError(duplicateErrorMessage);
-    const selectedAttribute = duplicateAttribute && duplicateAttribute.value ? ` - ${duplicateAttribute.value}` : "";
-    const commentText = `Duplicate - Already processed, Entry Number ${entry}${selectedAttribute} - 7501Proc`;
-    duplicatePreview.textContent = commentText;
-    duplicatePreview.classList.add("preview");
     try {
       await navigator.clipboard.writeText(commentText);
     } catch (err) {
@@ -154,29 +262,47 @@ editBtn.addEventListener("click", () => {
 
 const exitInput = document.getElementById("inputExit");
 const exitBtn = document.getElementById("exitBtn");
+const watchType = document.getElementById("watchType");
 
 exitBtn.addEventListener("click", async function () {
-  const input = exitInput.value.trim();
   const preview = document.getElementById("exitsPreview");
+  const cooValue = normalizeCoo(document.getElementById("coo")?.value || "");
+  const linesValue = document.getElementById("lines")?.value?.trim() || "";
+  const watchValue = watchType?.value || "";
 
-  if (!isValidEntryNumber(input)) {
+  if (!cooValue || !linesValue || Number(linesValue) <= 0 || !/^\d+$/.test(linesValue)) {
+    if (!cooValue) setInlineFieldError("cooError", "Please enter COO");
+    if (!linesValue || Number(linesValue) <= 0 || !/^\d+$/.test(linesValue)) setInlineFieldError("linesError", "Please enter Number of Lines");
     if (preview) {
       preview.textContent = "";
       preview.classList.remove("preview");
     }
-    alert("Please enter/select the reason for exit.");
     return;
   }
 
-  const inputText = `Exit - ${input} - 7501 PROC`;
-  preview.textContent = inputText;
-  preview.classList.add("preview");
+  if (!watchValue) {
+    setInlineFieldError("watchError", "Please select a watch type.");
+    if (preview) {
+      preview.textContent = "";
+      preview.classList.remove("preview");
+    }
+    return;
+  }
+
+  clearInlineFieldError("watchError");
+  const normalizedWatchValue = watchValue === "Shipment Contains Watches" ? "WATCHES" : watchValue;
+  const inputText = `Review - ${normalizedWatchValue} - ${cooValue} - ${linesValue} - 7501Proc`;
+  if (preview) {
+    preview.textContent = inputText;
+    preview.classList.add("preview");
+  }
   try {
     await navigator.clipboard.writeText(inputText);
   } catch (err) {
     alert(`please find error Massesge ${err}`);
   }
 });
+
 
 //////////////////Dropdown ///////////////////////////
 
@@ -314,10 +440,13 @@ if (completedCommentInput) {
 
 function setEntryTypeValue(value) {
   if (!entryTypeText) return;
+  const displayValue = value || "Do not make any changes";
+
   if (entryTypeText.tagName === "INPUT") {
-    entryTypeText.value = value;
+    entryTypeText.value = displayValue;
+    entryTypeText.setAttribute("value", displayValue);
   } else {
-    entryTypeText.textContent = value;
+    entryTypeText.textContent = displayValue;
   }
 }
 
@@ -325,25 +454,56 @@ function setEntryTypeForReview() {
   setEntryTypeValue("Do not make any changes");
 }
 
-function setReviewAttributesForReview(reason) {
-  if (reason === "Watches") {
+function setReviewAttributesForReview(commentText, reasonOverride) {
+  const comment = String(commentText || "").trim();
+  const reason = String(reasonOverride || "").trim();
+
+  if (!comment) {
+    setEntryTypeForReview();
+    if (attributesText) setAttributesValue(attributesText, "None Selected");
+    if (attributesNote) attributesNote.textContent = "Enter a comment to see the suggested attribute.";
+    return;
+  }
+
+  const upperComment = comment.toUpperCase();
+  const upperReason = reason.toUpperCase();
+
+  const hasWatchCase = /SHIPMENT\s+CONTAINS\s+(WATCHES?|CLOCKS?|WATCH\s+PARTS)|\bWATCHES?\b|\bCLOCKS?\b|WATCH\s+PARTS/i.test(comment) || /\bWATCHES?\b|\bCLOCKS?\b|WATCH\s+PARTS/i.test(upperReason);
+  const hasHoldCase = /DUPLEX\s+ERROR|ENTRY\s+NEEDS\s+RESET|SYSTEM\s+OUTAGE|ENTRY\s+CANNOT\s+BE\s+RESUMED|CANNOT\s+BE\s+RESUMED/i.test(comment) || /DUPLEX\s+ERROR|ENTRY\s+NEEDS\s+RESET|SYSTEM\s+OUTAGE|ENTRY\s+CANNOT\s+BE\s+RESUMED|CANNOT\s+BE\s+RESUMED/i.test(upperReason);
+  const hasEcomCase = /KEYED\s+87\s*\/\s*01|DUPLICATE\s*[-–]*\s*ALREADY\s+PROCESSED/i.test(comment) || /KEYED\s+87\s*\/\s*01|DUPLICATE\s*[-–]*\s*ALREADY\s+PROCESSED/i.test(upperReason) || /DOCUMENTS\s+SHIPMENT/i.test(upperReason) && /DUPLICATE|ALREADY\s+PROCESSED|87\s*\/\s*01/i.test(upperComment);
+  const isReviewCase = upperComment.startsWith("REVIEW") || /REVIEW/i.test(upperReason);
+
+  if (hasWatchCase) {
     setEntryTypeValue("UNASSIGNED");
-    if (attributesText) {
-      setAttributesValue(attributesText, "High Risk, Watches");
-    }
-    if (attributesNote) {
-      attributesNote.textContent = "High Risk and Watches selected. Release Only: Unticked";
-    }
+    if (attributesText) setAttributesValue(attributesText, "HIGH RISK, WATCHES");
+    if (attributesNote) attributesNote.textContent = "High Risk and Watches selected. Release Only: Unticked";
+    return;
+  }
+
+  if (hasHoldCase) {
+    setEntryTypeForReview();
+    if (attributesText) setAttributesValue(attributesText, "HOLD");
+    if (attributesNote) attributesNote.textContent = "Hold selected. Entry Type and Release Only unchanged.";
+    return;
+  }
+
+  if (hasEcomCase) {
+    setEntryTypeForReview();
+    if (attributesText) setAttributesValue(attributesText, "ECOM");
+    if (attributesNote) attributesNote.textContent = "ECOM selected. Entry Type and Release Only unchanged.";
+    return;
+  }
+
+  if (isReviewCase) {
+    setEntryTypeForReview();
+    if (attributesText) setAttributesValue(attributesText, "REVIEW");
+    if (attributesNote) attributesNote.textContent = "Review selected. Entry Type and Release Only unchanged.";
     return;
   }
 
   setEntryTypeForReview();
-  if (attributesText) {
-    setAttributesValue(attributesText, "Review");
-  }
-  if (attributesNote) {
-    attributesNote.textContent = "Review selected. Release Only: Unticked";
-  }
+  if (attributesText) setAttributesValue(attributesText, "REVIEW");
+  if (attributesNote) attributesNote.textContent = "Review selected. Entry Type and Release Only unchanged.";
 }
 
 function setAttributesValue(element, value) {
@@ -353,6 +513,39 @@ function setAttributesValue(element, value) {
   } else {
     element.textContent = value;
   }
+}
+
+function refreshReviewAttributePanel() {
+  const dept = document.getElementById("dept")?.value || "";
+  const inputComment = document.getElementById("add-comment")?.value.trim() || "";
+  const cooValue = normalizeCoo(document.getElementById("coo")?.value || "");
+  const linesValue = document.getElementById("lines")?.value?.trim() || "";
+  const selectedWatchType = document.getElementById("watchType")?.value || "";
+  const selectedHoldType = document.getElementById("holdCommentType")?.value || "";
+
+  if (!dept && !inputComment && !cooValue && !linesValue) {
+    if (selectedWatchType) {
+      setEntryTypeValue("UNASSIGNED");
+      if (attributesText) setAttributesValue(attributesText, "HIGH RISK, WATCHES");
+      if (attributesNote) attributesNote.textContent = "High Risk and Watches selected. Release Only: Unticked";
+      return;
+    }
+
+    if (selectedHoldType) {
+      setEntryTypeForReview();
+      if (attributesText) setAttributesValue(attributesText, "HOLD");
+      if (attributesNote) attributesNote.textContent = "Hold selected. Entry Type and Release Only unchanged.";
+      return;
+    }
+
+    setEntryTypeForReview();
+    if (attributesText) setAttributesValue(attributesText, "None Selected");
+    if (attributesNote) attributesNote.textContent = "Enter a completed comment or use review options to see the suggested attribute.";
+    return;
+  }
+
+  const draftComment = buildLegacyReviewComment(dept, inputComment, cooValue || "COO", linesValue || "0");
+  setReviewAttributesForReview(draftComment, dept);
 }
 
 function setBadgeValue(value) {
@@ -377,9 +570,7 @@ function updateAttributesForCompletedComment() {
     return;
   }
 
-  setAttributesValue(attributesText, "ECOM");
-  setEntryTypeForReview();
-  if (attributesNote) attributesNote.textContent = "Manual entry detected. Attribute set to ECOM.";
+  setReviewAttributesForReview(commentValue);
 }
 
 if (attributesText) {
@@ -416,20 +607,39 @@ numericAlphaInputs.forEach((element) => {
 
 [completedCommentInput, cooInput, linesInput].forEach((element) => {
   if (element) {
-    element.addEventListener("input", clear7501Error);
+    element.addEventListener("input", () => {
+      clear7501Error();
+      if (element === cooInput) {
+        cooInput.value = normalizeCoo(cooInput.value);
+        clearInlineFieldError("cooError");
+      }
+      if (element === linesInput) {
+        clearInlineFieldError("linesError");
+      }
+    });
   }
 });
 
 if (latestBtn) {
   latestBtn.addEventListener("click", async () => {
     const inputs = document.getElementById("input75");
-    const coo = document.getElementById("coo").value;
-    const lines = document.getElementById("lines").value;
+    const coo = normalizeCoo(document.getElementById("coo")?.value || "");
+    const lines = document.getElementById("lines")?.value.trim() || "";
     const commentValue = inputs?.value.trim() || "";
     const allowedPattern = /^[A-Za-z0-9\s-]+$/;
 
-    if (!commentValue || !coo || !lines) {
-      set7501Error("7501 comment, COO, and Lines are required.");
+    if (!commentValue) {
+      set7501Error("7501 comment is required.");
+      return;
+    }
+    if (!coo) {
+      setInlineFieldError("cooError", "Please enter COO");
+      set7501Error("COO is required.");
+      return;
+    }
+    if (!lines || Number(lines) <= 0 || !/^\d+$/.test(lines)) {
+      setInlineFieldError("linesError", "Please enter Number of Lines");
+      set7501Error("Number of Lines is required.");
       return;
     }
     if (!allowedPattern.test(commentValue)) {
@@ -438,6 +648,8 @@ if (latestBtn) {
     }
 
     clear7501Error();
+    clearInlineFieldError("cooError");
+    clearInlineFieldError("linesError");
     const preview = `${commentValue} - Keyed 87/01 - ${coo} - ${lines} - 7501PROC`;
     const preview7501 = document.getElementById("preview7501");
     if (preview7501) {
@@ -453,18 +665,16 @@ if (latestBtn) {
       console.error("Failed to copy:", err);
     }
 
-  const log = {
-    date: Date.now(),
-    action: preview,
-    waight: 1,
-  };
+    const log = {
+      date: Date.now(),
+      action: preview,
+      waight: 1,
+    };
 
-  logs.push(log);
-
-  localStorage.setItem("inputLogs", JSON.stringify(logs));
-  inputs.value = "";
-  renderLogs();
-});
+    logs.push(log);
+    localStorage.setItem("inputLogs", JSON.stringify(logs));
+    renderLogs();
+  });
 }
 
 /////////////////////////DATE GENRERATOR////////////////////////////////
@@ -564,6 +774,30 @@ if (indexReview) {
 ////////////////////////////////7501 Review Block///////////////////////////
 const Review7501 = document.getElementById("review7501");
 
+function buildLegacyReviewComment(selectedDept, additionalComment, cooValue, linesValue) {
+  const parts = ["Review"];
+  const cleanDept = (selectedDept || "").trim();
+  const cleanComment = (additionalComment || "").trim();
+
+  if (cleanDept && cleanDept !== "Reason not listed") {
+    parts.push(cleanDept);
+  }
+
+  if (cleanDept === "Reason not listed") {
+    if (cleanComment) {
+      parts.push(cleanComment);
+    }
+  } else if (cleanComment) {
+    parts.push(cleanComment);
+  }
+
+  if (cooValue) parts.push(cooValue);
+  if (linesValue) parts.push(linesValue);
+  parts.push("7501Proc");
+
+  return parts.join(" - ");
+}
+
 function setReviewError(message) {
   const reviewError = document.getElementById("reviewErrorMessage") || document.getElementById("preview7501Error");
   if (!reviewError) return;
@@ -575,66 +809,65 @@ function clearReviewError() {
   setReviewError("");
 }
 
-["dept", "task", "add-comment", "coo", "lines"].forEach((id) => {
+["dept", "add-comment", "coo", "lines", "watchType", "holdCommentType"].forEach((id) => {
   const element = document.getElementById(id);
   if (element) {
-    element.addEventListener("input", clearReviewError);
-    element.addEventListener("change", clearReviewError);
+    element.addEventListener("input", () => {
+      clearReviewError();
+      refreshReviewAttributePanel();
+    });
+    element.addEventListener("change", () => {
+      clearReviewError();
+      refreshReviewAttributePanel();
+    });
   }
 });
+
+if (completedCommentInput) {
+  completedCommentInput.addEventListener("input", () => {
+    updateAttributesForCompletedComment();
+    refreshReviewAttributePanel();
+  });
+}
 
 if (Review7501) {
   Review7501.addEventListener("click", async () => {
     const dept = document.getElementById("dept");
-    const task = document.getElementById("task");
     const inputComment = document.getElementById("add-comment");
 
     const selectedDept = dept?.value || "";
-    const additionalComment = inputComment?.value.trim();
-    const cooValue = (document.getElementById("coo") || {}).value?.trim().toUpperCase() || "";
-    const linesValue = (document.getElementById("lines") || {}).value?.trim() || "";
+    const additionalComment = inputComment?.value.trim() || "";
+    const cooValue = normalizeCoo(document.getElementById("coo")?.value || "");
+    const linesValue = document.getElementById("lines")?.value?.trim() || "";
 
     if (!selectedDept) {
       setReviewError("Please select a department for 7501 Review Comment.");
       return;
     }
 
-    if (!cooValue || !linesValue) {
-      setReviewError("Please enter both COO and line before generating a review comment.");
+    if (!cooValue) {
+      setInlineFieldError("cooError", "Please enter COO");
+      setReviewError("Please enter COO before generating a review comment.");
       return;
     }
 
-    const isAutoTaskReason = ["Reason not listed", "Watches"].includes(selectedDept);
-    const selectedTask = isAutoTaskReason
-      ? (selectedDept === "Watches" ? "Shipment Contains Watch" : "")
-      : (task?.value || "");
-
-    if (!isAutoTaskReason && !selectedTask) {
-      setReviewError("Please select a task for 7501 Review Comment.");
+    if (!linesValue || Number(linesValue) <= 0 || !/^\d+$/.test(linesValue)) {
+      setInlineFieldError("linesError", "Please enter Number of Lines");
+      setReviewError("Please enter Number of Lines before generating a review comment.");
       return;
     }
 
-    const commentParts = ["Review", selectedDept, selectedTask || ""];
-    if (additionalComment || cooValue || linesValue) {
-      commentParts.push(additionalComment || "");
-    }
-    if (cooValue) {
-      commentParts.push(cooValue);
-    }
-    if (linesValue) {
-      commentParts.push(linesValue);
-    }
-    commentParts.push("7501PROC");
-
-    const newSelect = commentParts.join(" - ");
+    const newSelect = buildLegacyReviewComment(selectedDept, additionalComment, cooValue, linesValue);
     clearReviewError();
+    clearInlineFieldError("cooError");
+    clearInlineFieldError("linesError");
     const output = document.getElementById("output");
     if (output) {
       output.textContent = newSelect;
       output.classList.add("preview");
     }
-    setEntryTypeForReview();
-    setReviewAttributesForReview(selectedDept);
+    setReviewAttributesForReview(newSelect, selectedDept);
+    refreshReviewAttributePanel();
 
     try {
       await navigator.clipboard.writeText(newSelect);

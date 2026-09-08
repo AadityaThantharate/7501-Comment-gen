@@ -72,11 +72,13 @@
   <div class="row">
     <label>Country of Origin (COO): </label>
     <input type="text" id="coo" onkeydown="checkKey(event)" required>
+    <div id="cooError" class="error-message" style="color:#c00; font-size:12px; display:none; margin-top:4px;"></div>
   </div>
 
   <div class="row">
     <label># Lines </label>
     <input type="text" id="lines" onkeydown="checkKey(event)" required>
+    <div id="linesError" class="error-message" style="color:#c00; font-size:12px; display:none; margin-top:4px;"></div>
   </div>
 </div>
       <div>
@@ -96,26 +98,37 @@
         <h3><i data-lucide="file-text"></i> 7501 Review Comment</h3>
         <select id="dept">
           <option value="">Select Department</option>
-          <option value="Country of origin">Country of origin</option>
-          <option value="Description">Description</option>
-          <option value="Document Missing">Document Missing</option>
-          <option value="Duplex Error">Duplex Error</option>
-          <option value="Paper Work">Paper Work</option>
-          <option value="Parties">Parties</option>
-          <option value="Value">Value</option>
-          <option value="Quantity">Quantity</option>
-          <option value="Shipment Contains Diamond">Shipment Contains Diamond</option>
-          <option value="Watches">Watches</option>
+          <option value="ADD/CVD Active Case In Application 85">ADD/CVD Active Case In Application 85</option>
+          <option value="ARMS/AMMUNITION - Arms and Ammunition">ARMS/AMMUNITION - Arms and Ammunition</option>
+          <option value="Country of Origin - Country code is invalid">Country of Origin - Country code is invalid</option>
+          <option value="Country of Origin - Country code is missing">Country of Origin - Country code is missing</option>
+          <option value="Currency Code Missing">Currency Code Missing</option>
+          <option value="Description - Kit breakdown / multiple line request">Description - Kit breakdown / multiple line request</option>
+          <option value="Diamond Certificate required">Diamond Certificate required</option>
+          <option value="Documents Shipment">Documents Shipment</option>
+          <option value="DOT/NHTSA HS - 7 data required">DOT/NHTSA HS - 7 data required</option>
+          <option value="FDA handling required">FDA handling required</option>
+          <option value="FWS handling required">FWS handling required</option>
+          <option value="Military shipment">Military shipment</option>
+          <option value="Paperwork - AWB number does not match multiple invoices">Paperwork - AWB number does not match multiple invoices</option>
+          <option value="Paperwork - Invoice is missing">Paperwork - Invoice is missing</option>
+          <option value="Paperwork - Invoice is not clear">Paperwork - Invoice is not clear</option>
+          <option value="Paperwork - Invoice not in English">Paperwork - Invoice not in English</option>
+          <option value="Parties - BSO account as per CCP">Parties - BSO account as per CCP</option>
+          <option value="Parties - BSO account as per entry document">Parties - BSO account as per entry document</option>
+          <option value="Parties - Manufacturing details required in invoice (textile description)">Parties - Manufacturing details required in invoice (textile description)</option>
+          <option value="Parties - SBP account as per CCP">Parties - SBP account as per CCP</option>
+          <option value="Parties - SBP account as per external SBP list">Parties - SBP account as per external SBP list</option>
+          <option value="Parties - Shipper postal code is incorrect in Duplex">Parties - Shipper postal code is incorrect in Duplex</option>
+          <option value="Parties - Special instructions available in CCP">Parties - Special instructions available in CCP</option>
+          <option value="Quantity - Unit of measurement is missing">Quantity - Unit of measurement is missing</option>
           <option value="Reason not listed">Reason not listed</option>
-        </select>
-
-
-        <select id="task">
-          <option value="">Select Task</option>
+          <option value="Shipment contains alcohol - FDA handling required">Shipment contains alcohol - FDA handling required</option>
+          <option value="Value - Value exceeds 2500 USD in commercial invoice">Value - Value exceeds 2500 USD in commercial invoice</option>
         </select>
 
         <input type="text" placeholder="Additional Comment" id="add-comment"/>
-        <button id="review7501">Copy Items</button>
+        <button id="review7501">Generate Comment</button>
         <div id="reviewErrorMessage" class="error-message" style="color: #c00; font-size: 12px; margin-top: 6px; display: none;"></div>
         <pre id="debug"></pre>
         <div id="output"></div>
@@ -123,10 +136,16 @@
       
 
       <div>
-        <h3><i data-lucide="truck"></i class='ri-information-line'> Exit Shipment ?</h3>
-        <input placeholder="Enter shipment Exit Reason" type="text" id="inputExit" />
+        <h3><i data-lucide="shield"></i> Watches Shipment</h3>
+        <select id="watchType">
+          <option value="">Select Watch Type</option>
+          <option value="Shipment Contains Watches">Shipment Contains Watches</option>
+          <option value="Shipment Contains Clocks">Shipment Contains Clocks</option>
+          <option value="Shipment Contains Watches Parts">Shipment Contains Watches Parts</option>
+        </select>
+        <div id="watchError" class="error-message" style="color: #c00; font-size: 12px; margin-top: 6px; display: none;"></div>
         <div class="button-group">
-          <button id="exitBtn">Exit Comment</button>
+          <button id="exitBtn">Generate Watch Comment</button>
           <div id="exitsPreview"></div>
         </div>
       </div>
@@ -170,15 +189,22 @@
         <div id="previewUnitConv"></div>
       </div>
       <div>
-        <h3><i data-lucide="database"></i>Shipment In Use</h3>
-        <input id="entry-input" type="text" inputmode="text" pattern="[A-Za-z0-9\s-]*" placeholder="Please enter the Entry Number to proceed." />
-        <button id="proc-comment">Shipment In Use</button>
+        <h3><i data-lucide="database"></i>Hold Comment Generator</h3>
+        <select id="holdCommentType">
+          <option value="">Select Hold Comment</option>
+          <option value="Entry cannot be resumed not in proper status">Entry cannot be resumed not in proper status</option>
+          <option value="Entry cannot be resumed not in proper status - system outage -">Entry cannot be resumed not in proper status - system outage -</option>
+          <option value="Entry needs reset">Entry needs reset</option>
+        </select>
+        <div id="holdCommentError" class="error-message" style="color: #c00; font-size: 12px; margin-top: 6px; display: none;"></div>
+         <input type="text" placeholder="Additional Comment" id="holdAdditionalComment"/>
+        <button id="proc-comment">Generate Hold Comment</button>
         <div id="shipmentInUseError" class="error-message" style="color: #c00; font-size: 12px; margin-top: 6px; display: none;"></div>
-        <div id="previewHold"></div>
+        <div id="previewHold" class="preview" style="display: none; margin-top: 8px;"></div>
       </div>
       <div>
         <h3><i data-lucide="alert-circle"></i>Duplicate (Already)</h3>
-        <input id="duplicate-input" type="text" inputmode="text" pattern="[A-Za-z0-9\s-]*" placeholder="Please enter the Entry Number to proceed." />
+        <input id="duplicate-input" type="text" inputmode="text" placeholder="Please enter the Entry Number to proceed." />
         <button id="duplicate-btn">Duplicate</button>
         <div id="duplicateErrorMessage" class="error-message" style="color: #c00; font-size: 12px; margin-top: 6px; display: none;"></div>
         <div id="duplicatePreview"></div>

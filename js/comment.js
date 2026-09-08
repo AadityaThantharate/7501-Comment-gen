@@ -290,8 +290,13 @@ exitBtn.addEventListener("click", async function () {
   }
 
   clearInlineFieldError("watchError");
-  const normalizedWatchValue = watchValue === "Shipment Contains Watches" ? "WATCHES" : watchValue;
+  const normalizedWatchValue = {
+    "Shipment Contains Watches": "Shipment Contains Watches",
+    "Shipment Contains Clocks": "Shipment Contains Clocks",
+    "Shipment Contains Watches Parts": "Shipment Contains Watches Parts",
+  }[watchValue] || watchValue;
   const inputText = `Review - ${normalizedWatchValue} - ${cooValue} - ${linesValue} - 7501Proc`;
+
   if (preview) {
     preview.textContent = inputText;
     preview.classList.add("preview");

@@ -171,14 +171,16 @@
       </div>
       <div>
         <h3><i data-lucide="database"></i>Shipment In Use</h3>
-        <input id="entry-input" type="text" inputmode="text" pattern="[A-Za-z0-9\s-]*" placeholder="Enter shipment entry..." />
+        <input id="entry-input" type="text" inputmode="text" pattern="[A-Za-z0-9\s-]*" placeholder="Please enter the Entry Number to proceed." />
         <button id="proc-comment">Shipment In Use</button>
+        <div id="shipmentInUseError" class="error-message" style="color: #c00; font-size: 12px; margin-top: 6px; display: none;"></div>
         <div id="previewHold"></div>
       </div>
       <div>
         <h3><i data-lucide="alert-circle"></i>Duplicate (Already)</h3>
-        <input id="duplicate-input" type="text" inputmode="text" pattern="[A-Za-z0-9\s-]*" placeholder="Enter duplicate entry..." />
+        <input id="duplicate-input" type="text" inputmode="text" pattern="[A-Za-z0-9\s-]*" placeholder="Please enter the Entry Number to proceed." />
         <button id="duplicate-btn">Duplicate</button>
+        <div id="duplicateErrorMessage" class="error-message" style="color: #c00; font-size: 12px; margin-top: 6px; display: none;"></div>
         <div id="duplicatePreview"></div>
       </div>
     </div>

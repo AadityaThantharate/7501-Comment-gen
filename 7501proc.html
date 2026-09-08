@@ -192,6 +192,7 @@
         </div>
         <div class="card-body">
           <button id="generateShipmentInUse" class="btn btn-primary">Generate Comment</button>
+          <div id="shipmentInUseError" class="error-message" style="color: #c00; font-size: 12px; margin-top: 6px; display: none;"></div>
           <div id="previewShipmentInUse" class="preview-box"></div>
           <button id="copyShipmentInUse" class="btn btn-secondary">Copy</button>
         </div>
@@ -205,10 +206,11 @@
         <div class="card-body">
           <div class="input-group">
             <label>Exit Reason</label>
-            <textarea id="exitReason" placeholder="Enter reason for exit..." style="height: 80px;"></textarea>
+            <textarea id="exitReason" placeholder="Please enter/select the reason for exit." style="height: 80px;"></textarea>
           </div>
 
           <button id="generateExit" class="btn btn-primary">Generate Comment</button>
+          <div id="exitErrorMessage" class="error-message" style="color: #c00; font-size: 12px; margin-top: 6px; display: none;"></div>
           <div id="previewExit" class="preview-box"></div>
           <button id="copyExit" class="btn btn-secondary">Copy</button>
         </div>

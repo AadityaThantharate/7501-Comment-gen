@@ -40,6 +40,8 @@ const hscodeInput = document.getElementById("hscodeInput");
 const generateHSCodeBtn = document.getElementById("generateHSCode");
 const previewHSCode = document.getElementById("previewHSCode");
 const copyHSCodeBtn = document.getElementById("copyHSCode");
+const shipmentInUseError = document.getElementById("shipmentInUseError");
+const exitErrorMessage = document.getElementById("exitErrorMessage");
 const PROC_TAG = "7501PROC";
 
 // ==================== Utility Functions ====================
@@ -82,6 +84,22 @@ function setAttributesNote(note) {
   if (attributesNote) {
     attributesNote.textContent = note || "";
   }
+}
+
+function showFieldError(element, message) {
+  if (!element) return;
+  element.textContent = message;
+  element.style.display = "block";
+}
+
+function clearFieldError(element) {
+  if (!element) return;
+  element.textContent = "";
+  element.style.display = "none";
+}
+
+function isValidEntryNumber(value) {
+  return typeof value === "string" && value.trim().length >= 1;
 }
 
 function setCompletedCommentAttributeState() {
@@ -399,7 +417,17 @@ copyReviewBtn.addEventListener("click", async function() {
 
 generateShipmentInUseBtn.addEventListener("click", async function() {
   const { entryNo, coo, lines } = getInputValues();
-  const normalizedEntryNo = entryNo || "[No Entry Number]";
+
+  if (!isValidEntryNumber(entryNo)) {
+    showFieldError(shipmentInUseError, "Entry Number is required.");
+    if (previewShipmentInUse) {
+      previewShipmentInUse.textContent = "";
+    }
+    return;
+  }
+
+  clearFieldError(shipmentInUseError);
+  const normalizedEntryNo = entryNo;
   const normalizedCoo = coo || "[No COO]";
   const normalizedLines = lines || "[No Lines]";
   const comment = joinCommentSegments("Shipment in use", normalizedEntryNo, normalizedCoo, normalizedLines, PROC_TAG);
@@ -417,7 +445,17 @@ copyShipmentInUseBtn.addEventListener("click", async function() {
 
 generateExitBtn.addEventListener("click", async function() {
   const { coo, lines } = getInputValues();
-  const exitReason = exitReasonTA.value.trim() || "[No Exit Reason]";
+  const exitReason = exitReasonTA.value.trim();
+
+  if (!isValidEntryNumber(exitReason)) {
+    showFieldError(exitErrorMessage, "Please enter/select the reason for exit.");
+    if (previewExit) {
+      previewExit.textContent = "";
+    }
+    return;
+  }
+
+  clearFieldError(exitErrorMessage);
   const normalizedCoo = coo || "[No COO]";
   const normalizedLines = lines || "[No Lines]";
   const comment = joinCommentSegments("Exit", exitReason, normalizedCoo, normalizedLines, PROC_TAG);

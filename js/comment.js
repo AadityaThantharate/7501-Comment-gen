@@ -10,8 +10,26 @@ const procComment = document.getElementById("proc-comment");
 const entryInput = document.getElementById("entry-input");
 const duplicateBtn = document.getElementById("duplicate-btn");
 const duplicateInput = document.getElementById("duplicate-input");
+const shipmentInUseError = document.getElementById("shipmentInUseError");
+const duplicateErrorMessage = document.getElementById("duplicateErrorMessage");
 const editBtn = document.getElementById("edit");
 const editInput = document.getElementById("editInput");
+
+function showFieldError(element, message) {
+  if (!element) return;
+  element.textContent = message;
+  element.style.display = "block";
+}
+
+function clearFieldError(element) {
+  if (!element) return;
+  element.textContent = "";
+  element.style.display = "none";
+}
+
+function isValidEntryNumber(value) {
+  return typeof value === "string" && value.trim().length >= 1;
+}
 
 function formatCooLines(coo, lines) {
   const parts = [];
@@ -80,8 +98,18 @@ decrementBtn.addEventListener("click", () => {
 procComment.addEventListener("click", function () {
   const previewHold = document.getElementById("previewHold");
   const entry = entryInput.value.trim();
-  const safeEntry = entry || "[No Entry Number]";
 
+  if (!isValidEntryNumber(entry)) {
+    showFieldError(shipmentInUseError, "Entry Number is required.");
+    if (previewHold) {
+      previewHold.textContent = "";
+      previewHold.classList.remove("preview");
+    }
+    return;
+  }
+
+  clearFieldError(shipmentInUseError);
+  const safeEntry = entry;
   const preview = `Shipment in use - ${safeEntry} - 7501PROC`;
   navigator.clipboard.writeText(`${safeEntry} - Shipment is on hold`);
   previewHold.textContent = preview;
@@ -92,9 +120,19 @@ if (duplicateBtn && duplicateInput) {
   duplicateBtn.addEventListener("click", async function () {
     const duplicatePreview = document.getElementById("duplicatePreview");
     const entry = duplicateInput.value.trim();
-    const safeEntry = entry || "[No Entry Number]";
 
-    const commentText = `Duplicate - Already processed, Entry Number ${safeEntry} - 7501Proc`;
+    if (!isValidEntryNumber(entry)) {
+      showFieldError(duplicateErrorMessage, "Entry Number is required.");
+      if (duplicatePreview) {
+        duplicatePreview.textContent = "";
+        duplicatePreview.classList.remove("preview");
+      }
+      return;
+    }
+
+    clearFieldError(duplicateErrorMessage);
+    const selectedAttribute = duplicateAttribute && duplicateAttribute.value ? ` - ${duplicateAttribute.value}` : "";
+    const commentText = `Duplicate - Already processed, Entry Number ${entry}${selectedAttribute} - 7501Proc`;
     duplicatePreview.textContent = commentText;
     duplicatePreview.classList.add("preview");
     try {
@@ -118,9 +156,19 @@ const exitInput = document.getElementById("inputExit");
 const exitBtn = document.getElementById("exitBtn");
 
 exitBtn.addEventListener("click", async function () {
-  const input = exitInput.value.trim() || "[No Exit Reason]";
-  const inputText = `Exit - ${input} - 7501 PROC`;
+  const input = exitInput.value.trim();
   const preview = document.getElementById("exitsPreview");
+
+  if (!isValidEntryNumber(input)) {
+    if (preview) {
+      preview.textContent = "";
+      preview.classList.remove("preview");
+    }
+    alert("Please enter/select the reason for exit.");
+    return;
+  }
+
+  const inputText = `Exit - ${input} - 7501 PROC`;
   preview.textContent = inputText;
   preview.classList.add("preview");
   try {

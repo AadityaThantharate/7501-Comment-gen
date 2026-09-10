@@ -188,7 +188,8 @@ procComment.addEventListener("click", async function () {
   clearInlineFieldError("cooError");
   clearInlineFieldError("linesError");
 
-  const commentParts = ["Review", "HOLD", selectedHoldType];
+  const normalizedHoldType = String(selectedHoldType || "").trim().replace(/-\s*$/, "").trim();
+  const commentParts = ["Review", "Duplex Error", normalizedHoldType];
   if (additionalHoldComment) {
     commentParts.push(additionalHoldComment);
   }
@@ -788,11 +789,7 @@ function buildLegacyReviewComment(selectedDept, additionalComment, cooValue, lin
     parts.push(cleanDept);
   }
 
-  if (cleanDept === "Reason not listed") {
-    if (cleanComment) {
-      parts.push(cleanComment);
-    }
-  } else if (cleanComment) {
+  if (cleanComment) {
     parts.push(cleanComment);
   }
 
